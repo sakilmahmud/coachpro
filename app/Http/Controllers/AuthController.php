@@ -23,10 +23,9 @@ class AuthController extends Controller
     //
     public function loadRegister()
     {
-        if(Auth::user() && Auth::user()->is_admin == 1){
+        if (Auth::user() && Auth::user()->is_admin == 1) {
             return redirect('/admin/dashboard');
-        }
-        else if(Auth::user() && Auth::user()->is_admin == 0){
+        } else if (Auth::user() && Auth::user()->is_admin == 0) {
             return redirect('/dashboard');
         }
         return view('register');
@@ -37,7 +36,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'string|required|min:2',
             'email' => 'string|email|required|max:100|unique:users',
-            'password' =>'string|required|confirmed|min:6'
+            'password' => 'string|required|confirmed|min:6'
         ]);
 
         $user = new User;
@@ -46,15 +45,14 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return back()->with('success','Your Registration has been successfull.');
+        return back()->with('success', 'Your Registration has been successfull.');
     }
 
     public function loadLogin()
     {
-        if(Auth::user() && Auth::user()->is_admin == 1){
+        if (Auth::user() && Auth::user()->is_admin == 1) {
             return redirect('/admin/dashboard');
-        }
-        else if(Auth::user() && Auth::user()->is_admin == 0){
+        } else if (Auth::user() && Auth::user()->is_admin == 0) {
             return redirect('/dashboard');
         }
         return view('login');
@@ -67,47 +65,34 @@ class AuthController extends Controller
             'password' => 'string|required'
         ]);
 
-        $userCredential = $request->only('email','password');
-        if(Auth::attempt($userCredential)){
+        $userCredential = $request->only('email', 'password');
+        if (Auth::attempt($userCredential)) {
 
-            if(Auth::user()->is_admin == 1){
+            if (Auth::user()->is_admin == 1) {
                 return redirect('/admin/dashboard');
-            }
-            else{
+            } else {
                 return redirect('/dashboard');
             }
-
-        }
-        else{
-            return back()->with('error','Username & Password is incorrect');
+        } else {
+            return back()->with('error', 'Username & Password is incorrect');
         }
     }
 
     public function loadDashboard()
-    {
-        
-        {
-                $user = Auth::user();
+    { {
+            $user = Auth::user();
 
-                // Now you have the user's ID in $user->id
-                $userId = $user->id;
-                // Retrieve the user by ID
-                $user = User::findOrFail($userId);
-                //dd($userId);
-                $subjectIds = Access::where('student_id', $user->id)->pluck('subject_id')->toArray();
-                $subjects = Subject::whereIn('id', $subjectIds)->get();
-
-        
+            // Now you have the user's ID in $user->id
+            $userId = $user->id;
+            // Retrieve the user by ID
+            $user = User::findOrFail($userId);
+            //dd($userId);
+            $subjectIds = Access::where('student_id', $user->id)->pluck('subject_id')->toArray();
+            $subjects = Subject::whereIn('id', $subjectIds)->get();
         }
 
         //dd(  $subjects );
-        return view('student.dashboard',['exams'=>$subjects]);
-    }
-
-    public function adminDashboard()
-    {
-        $subjects = Subject::all();
-        return view('admin.dashboard',compact('subjects'));
+        return view('student.dashboard', ['exams' => $subjects]);
     }
 
     public function logout(Request $request)
@@ -124,60 +109,55 @@ class AuthController extends Controller
 
     public function forgetPassword(Request $request)
     {
-        try{
+        try {
 
-            $user = User::where('email',$request->email)->get();
+            $user = User::where('email', $request->email)->get();
 
-            if(count($user) > 0){
+            if (count($user) > 0) {
 
                 $token = Str::random(40);
                 $domain = URL::to('/');
-                $url = $domain.'/reset-password?token='.$token;
+                $url = $domain . '/reset-password?token=' . $token;
 
                 $data['url'] = $url;
                 $data['email'] = $request->email;
                 $data['title'] = 'Password Reset';
                 $data['body'] = 'Please click on below link to reset your password.';
-//dd( $url);
-                Mail::send('forgetPasswordMail',['data'=>$data],function($message) use ($data){
+                //dd( $url);
+                Mail::send('forgetPasswordMail', ['data' => $data], function ($message) use ($data) {
                     $message->to($data['email'])->subject($data['title']);
                 });
 
                 $dateTime = Carbon::now()->format('Y-m-d H:i:s');
 
                 PasswordReset::updateOrCreate(
-                    ['email'=>$request->email],
+                    ['email' => $request->email],
                     [
                         'email' => $request->email,
                         'token' => $token,
                         'created_at' => $dateTime
                     ]
                 );
-                
-                return back()->with('success','Please check your mail to reset your password!');
 
+                return back()->with('success', 'Please check your mail to reset your password!');
+            } else {
+                return back()->with('error', 'Email is not exists!');
             }
-            else{
-                return back()->with('error','Email is not exists!');
-            }
-
-        }catch(\Exception $e){
-            return back()->with('error',$e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
     }
 
     public function resetPasswordLoad(Request $request)
     {
-        $resetData = PasswordReset::where('token',$request->token)->get();
+        $resetData = PasswordReset::where('token', $request->token)->get();
 
-        if(isset($request->token) && count($resetData) > 0){
+        if (isset($request->token) && count($resetData) > 0) {
 
-            $user = User::where('email',$resetData[0]['email'])->get();
+            $user = User::where('email', $resetData[0]['email'])->get();
 
-            return view('resetPassword',compact('user'));
-
-        }
-        else{
+            return view('resetPassword', compact('user'));
+        } else {
             return view('404');
         }
     }
@@ -192,7 +172,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        PasswordReset::where('email',$user->email)->delete();
+        PasswordReset::where('email', $user->email)->delete();
 
         return "<h2>Your password has been reset successfully.</h2>";
     }

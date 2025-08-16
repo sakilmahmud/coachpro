@@ -30,6 +30,19 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
+
+    public function adminDashboard()
+    {
+        $batchCount = Subject::count();
+        $studentCount = User::where('is_admin', 0)->count();
+
+        return view('admin.dashboard', compact('batchCount', 'studentCount'));
+    }
+    public function batches()
+    {
+        $subjects = Subject::all();
+        return view('admin.batches', compact('subjects'));
+    }
     //add subject
     public function addSubject(Request $request)
     {

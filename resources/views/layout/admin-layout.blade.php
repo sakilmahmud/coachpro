@@ -8,6 +8,7 @@
   <link rel="icon" type="image/x-icon" href="{{ asset('image/fevicon1.png') }}">
   <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="{{ asset('js/multiselect-dropdown.js') }}"></script>
@@ -33,31 +34,24 @@
           <span class="sr-only">Toggle Menu</span>
         </button>
       </div>
-      <h1><a href="/admin/dashboard" class="logo">Admin Dashboard</a></h1>
+      <h1><a href="/admin/dashboard" class="logo"><img src="https://coachproconsulting.com/image/logo-new.png" alt="CoachPro Consulting Logo" style="max-width: 100%; height: auto;"></a></h1>
       <ul class="list-unstyled components mb-5">
+        <li class="active"> <a href="{{ route('admin.dashboard') }}"><span class="fa fa-tachometer mr-3"></span> Dashboard</a> </li>
         <li class="active">
-          <a href="/admin/dashboard"><span class="fa fa-book mr-3"></span>Batches</a><i class="fa-solid fa-people-group"></i>
+            <a href="{{ route('courses.index') }}"><span class="fa fa-book mr-3"></span> Courses</a>
         </li>
-        <!-- <li class="active">
-            <a href="/admin/exam"><span class="fa fa-tasks mr-3"></span> Exams</a>
-          </li> -->
-        <!-- <li class="active">
-            <a href="{{ route('packageDashboard') }}"><span class="fa fa-gift mr-3"></span> Exam Packages</a>
-          </li> -->
-        <!-- <li class="active">
-            <a href="/admin/marks"><span class="fa fa-check mr-3"></span> Marks</a>
-          </li> -->
+        <li class="active"> <a href="{{ route('batches') }}"><span class="fa fa-book mr-3"></span> Batches</a></li>
         <li class="active">
-          <a href="/admin/qna-ans"><span class="fa fa-question-circle mr-3"></span>Mock Test</a>
+          <a href="/admin/qna-ans"><span class="fa fa-question-circle mr-3"></span> Mock Test</a>
         </li>
         <li class="active">
           <a href="/admin/students"><span class="fa fa-graduation-cap mr-3"></span> Students</a>
         </li>
         <li class="active">
-          <a href="/admin/flash"><span class="fa fa-question-circle mr-3"></span>Flash Cards</a>
+          <a href="/admin/flash"><span class="fa fa-question-circle mr-3"></span> Flash Cards</a>
         </li>
         <li class="active">
-          <a href="/admin/studentquery"><span class="fa fa-info mr-3"></span>View Student Query</a>
+          <a href="/admin/studentquery"><span class="fa fa-info mr-3"></span> View Student Query</a>
         </li>
         <li>
           <a href="/logout"><span class="fa fa-sign-out mr-3"></span> Logout</a>
