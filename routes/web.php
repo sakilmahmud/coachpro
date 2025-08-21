@@ -46,7 +46,13 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::group(['middleware' => ['web', 'checkAdmin']], function () {
     Route::get('/admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::resource('admin/courses', CourseController::class);
-    Route::get('/admin/batches', [AdminController::class, 'batches'])->name('batches');
+        Route::get('/admin/batches', [AdminController::class, 'batches'])->name('batches');
+        Route::get('/admin/batch/{id}', [AdminController::class, 'batchDetail'])->name('batchDetail');
+        Route::post('/admin/enroll-student', [AdminController::class, 'enrollStudent'])->name('enrollStudent');
+        Route::post('/admin/upload-pdf', [AdminController::class, 'uploadPdf'])->name('uploadPdf');
+            Route::post('/admin/upload-video', [AdminController::class, 'uploadVideo'])->name('uploadVideo');
+    Route::post('/admin/delete-pdf', [AdminController::class, 'deletePdf'])->name('deletePdf');
+    Route::post('/admin/delete-video', [AdminController::class, 'deleteVideo'])->name('deleteVideo');
 
     //Batches route
     Route::post('/add-subject', [AdminController::class, 'addSubject'])->name('addSubject');

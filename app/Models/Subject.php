@@ -10,6 +10,7 @@ class Subject extends Model
     use HasFactory;
 
     protected $fillable = [
+        'course_id',
         'subject',
         'titel',
         'duration',
@@ -24,5 +25,26 @@ class Subject extends Model
     public function accessSubjects()
     {
         return $this->hasMany(Access::class, 'id');
+    }
+
+    // New relationship to Course model
+        public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function pdfs()
+    {
+        return $this->hasMany(Pdf::class, 'subject_id');
+    }
+
+    public function videolinks()
+    {
+        return $this->hasMany(Videolink::class, 'subject_id');
+    }
+
+    public function getEnrolledStudents()
+    {
+        return $this->hasManyThrough(User::class, Access::class, 'subject_id', 'id', 'id', 'student_id');
     }
 }

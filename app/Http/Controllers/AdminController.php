@@ -21,6 +21,7 @@ use App\Models\StudentQuery;
 use App\Models\FlashQuestion;
 use App\Imports\QnaImport;
 use App\Exports\ExportStudent;
+use App\Models\Course;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -38,10 +39,114 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('batchCount', 'studentCount'));
     }
+
     public function batches()
     {
         $subjects = Subject::all();
-        return view('admin.batches', compact('subjects'));
+        $course = Course::all();
+        /* echo "<pre>";
+        print_r($course);
+        die; */
+        return view('admin.batches', compact('subjects', 'course'));
+    }
+
+    public function batchDetail($id)
+    {
+        $batch = Subject::with(['course', 'pdfs', 'videolinks', 'getEnrolledStudents'])->find($id);
+        $allStudents = User::where('is_admin', 0)->get();
+        $enrolledStudentIds = $batch->getEnrolledStudents->pluck('id')->toArray();
+        $unenrolledStudents = $allStudents->reject(function ($student) use ($enrolledStudentIds) {
+            return in_array($student->id, $enrolledStudentIds);
+        });
+
+        return view('admin.batch-detail', compact('batch', 'unenrolledStudents'));
+    }
+
+    public function enrollStudent(Request $request)
+    {
+        try {
+            Access::insert([
+                'subject_id' => $request->batch_id,
+                'student_id' => $request->student_id,
+            ]);
+
+            return redirect()->back()->with('success', 'Student enrolled successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function uploadPdf(Request $request)
+    {
+        $request->validate([
+            'topic' => 'required|string|max:255',
+            'pdf' => 'required|file|mimes:pdf',
+            'batch_id' => 'required|integer|exists:subjects,id'
+        ]);
+
+        try {
+            $originalFileName = $request->file('pdf')->getClientOriginalName();
+            $path = $request->file('pdf')->storeAs('pdfs', $originalFileName, 'public');
+
+            if (!$path) {
+                return back()->with('error', 'Failed to save the PDF.');
+            }
+
+            Pdf::create([
+                'subject_id' => $request->batch_id,
+                'topic' => $request->topic,
+                'pdf' => $path,
+            ]);
+
+            return back()->with('success', 'PDF uploaded successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function uploadVideo(Request $request)
+    {
+        $request->validate([
+            'topic' => 'required|string|max:255',
+            'link' => 'required|url',
+            'batch_id' => 'required|integer|exists:subjects,id'
+        ]);
+
+        try {
+            Videolink::create([
+                'subject_id' => $request->batch_id,
+                'topic' => $request->topic,
+                'link' => $request->link,
+            ]);
+
+            return back()->with('success', 'Video link uploaded successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function deletePdf(Request $request)
+    {
+        try {
+            $pdf = Pdf::findOrFail($request->id);
+            Storage::disk('public')->delete($pdf->pdf);
+            $pdf->delete();
+
+            return redirect()->back()->with('success', 'PDF deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function deleteVideo(Request $request)
+    {
+        try {
+            Videolink::findOrFail($request->id)->delete();
+
+            return redirect()->back()->with('success', 'Video link deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
     //add subject
     public function addSubject(Request $request)
@@ -67,16 +172,15 @@ class AdminController extends Controller
     public function editSubject(Request $request)
     {
         try {
-
             $subject = Subject::find($request->id);
+            $subject->course_id = $request->course_id; // New: Update course_id
             $subject->subject = $request->subject;
-            $subject->titel = $request->title;
             $subject->duration = $request->duration;
             $subject->starting_date = $request->startdate;
             $subject->end_date = $request->enddate;
             $subject->explnation = $request->explnation;
             $subject->save();
-            return response()->json(['success' => true, 'msg' => 'Subject updated Successfully!']);
+            return response()->json(['success' => true, 'msg' => 'Batch updated Successfully!']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'msg' => $e->getMessage()]);
         };
@@ -151,7 +255,7 @@ class AdminController extends Controller
 
 
     ////Delete pdf
-    public function deletepdf($id)
+    /* public function deletepdf($id)
     {
         $record = Pdf::find($id);
         $record->delete();
@@ -159,7 +263,7 @@ class AdminController extends Controller
         $exams = Exam::with('subjects')->get();
 
         return view('admin.dashboard', ['subjects' => $subjects, 'exams' => $exams]);
-    }
+    } */
 
     ////Add Video Link
     public function addlink(Request $request)
