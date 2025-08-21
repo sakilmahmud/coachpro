@@ -52,7 +52,8 @@ Route::group(['middleware' => ['web', 'checkAdmin']], function () {
         Route::post('/admin/upload-pdf', [AdminController::class, 'uploadPdf'])->name('uploadPdf');
             Route::post('/admin/upload-video', [AdminController::class, 'uploadVideo'])->name('uploadVideo');
     Route::post('/admin/delete-pdf', [AdminController::class, 'deletePdf'])->name('deletePdf');
-    Route::post('/admin/delete-video', [AdminController::class, 'deleteVideo'])->name('deleteVideo');
+        Route::post('/admin/delete-video', [AdminController::class, 'deleteVideo'])->name('deleteVideo');
+    Route::get('/admin/check-enrolled-students', [AdminController::class, 'checkEnrolledStudents'])->name('checkEnrolledStudents');
 
     //Batches route
     Route::post('/add-subject', [AdminController::class, 'addSubject'])->name('addSubject');

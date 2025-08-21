@@ -38,7 +38,7 @@
       <ul class="list-unstyled components mb-5">
         <li class="active"> <a href="{{ route('admin.dashboard') }}"><span class="fa fa-tachometer mr-3"></span> Dashboard</a> </li>
         <li class="active">
-            <a href="{{ route('courses.index') }}"><span class="fa fa-book mr-3"></span> Courses</a>
+          <a href="{{ route('courses.index') }}"><span class="fa fa-book mr-3"></span> Courses</a>
         </li>
         <li class="active"> <a href="{{ route('batches') }}"><span class="fa fa-book mr-3"></span> Batches</a></li>
         <li class="active">
@@ -64,8 +64,12 @@
     </div>
   </div>
   <!-- <script src="{{ asset('js/jquery.min.js') }}"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/main.js') }}"></script>
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  @stack('scripts')
 </body>
 
 </html>

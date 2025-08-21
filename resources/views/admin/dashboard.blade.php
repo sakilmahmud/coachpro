@@ -21,17 +21,27 @@
     </section>
     <section class="content">
         <div class="row">
-            <div class="col-lg-6 col-6">
+            <div class="col-lg-4 col-6"> {{-- Changed to col-lg-4 --}}
+                <div class="card text-white bg-orange mb-3">
+                    <div class="card-header">Courses</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $courseCount }}</h5>
+                        <p class="card-text">Number of Courses</p>
+                        <a href="{{ route('courses.index') }}" class="btn btn-light">More info</a> {{-- Link to courses index --}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-6"> {{-- Changed to col-lg-4 --}}
                 <div class="card text-white bg-orange mb-3">
                     <div class="card-header">Batches</div>
                     <div class="card-body">
                         <h5 class="card-title">{{ $batchCount }}</h5>
                         <p class="card-text">Number of Batches</p>
-                        <a href="{{ route('admin.studentsDashboard') }}" class="btn btn-light">More info</a>
+                        <a href="{{ route('batches') }}" class="btn btn-light">More info</a> {{-- Link to batches index --}}
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-6">
+            <div class="col-lg-4 col-6"> {{-- Changed to col-lg-4 --}}
                 <div class="card text-white bg-orange mb-3">
                     <div class="card-header">Students</div>
                     <div class="card-body">

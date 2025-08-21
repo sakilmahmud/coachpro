@@ -3,19 +3,15 @@
 
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h2>Courses</h2>
-            </div>
-            <div class="col-sm-6 text-right">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCourseModal">Add Course</button>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Courses</h2>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add Course</button>
         </div>
     </section>
     <section class="content">
         <div class="card">
             <div class="card-body">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-striped" id="courseTable">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -32,8 +28,8 @@
                             <td>{{ $course->name }}</td>
                             <td>{{ $course->description }}</td>
                             <td>
-                                <button class="btn btn-info btn-sm editButton" data-id="{{ $course->id }}" data-toggle="modal" data-target="#editCourseModal">Edit</button>
-                                <button class="btn btn-danger btn-sm deleteButton" data-id="{{ $course->id }}" data-toggle="modal" data-target="#deleteCourseModal">Delete</button>
+                                <button class="btn btn-info btn-sm editButton" data-id="{{ $course->id }}" data-bs-toggle="modal" data-bs-target="#editCourseModal">Edit</button>
+                                <button class="btn btn-danger btn-sm deleteButton" data-id="{{ $course->id }}" data-bs-toggle="modal" data-bs-target="#deleteCourseModal">Delete</button>
                             </td>
                         </tr>
                         @endforeach
@@ -55,7 +51,7 @@
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h5 class="modal-title" id="addCourseModalLabel">Add New Course</h5>
-                <button type="button" class="btn btn-danger close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -72,7 +68,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save Course</button>
                 </div>
             </form>
@@ -86,7 +82,7 @@
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
-                <button type="button" class="btn btn-danger close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -105,7 +101,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Update Course</button>
                 </div>
             </form>
@@ -119,7 +115,7 @@
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h5 class="modal-title" id="deleteCourseModalLabel">Delete Course</h5>
-                <button type="button" class="btn btn-danger close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -131,7 +127,7 @@
                     <input type="hidden" id="delete_course_id" name="id">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </div>
             </form>
@@ -142,6 +138,7 @@
 <script>
     $(document).ready(function() {
         // Add Course
+        $('#courseTable').DataTable(); // Initialize Datatable
         $('#addCourseForm').submit(function(e) {
             e.preventDefault();
 

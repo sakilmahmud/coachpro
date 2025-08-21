@@ -32,12 +32,13 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
 
-    public function adminDashboard()
+        public function adminDashboard()
     {
         $batchCount = Subject::count();
         $studentCount = User::where('is_admin', 0)->count();
+        $courseCount = Course::count(); // Add this line
 
-        return view('admin.dashboard', compact('batchCount', 'studentCount'));
+        return view('admin.dashboard', compact('batchCount', 'studentCount', 'courseCount')); // Update compact
     }
 
     public function batches()
@@ -138,7 +139,7 @@ class AdminController extends Controller
         }
     }
 
-    public function deleteVideo(Request $request)
+        public function deleteVideo(Request $request)
     {
         try {
             Videolink::findOrFail($request->id)->delete();
@@ -148,13 +149,22 @@ class AdminController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
+    public function checkEnrolledStudents(Request $request)
+    {
+        $subjectId = $request->id;
+        $enrolledStudentsCount = Access::where('subject_id', $subjectId)->count();
+
+        return response()->json(['enrolled' => $enrolledStudentsCount > 0]);
+    }
     //add subject
     public function addSubject(Request $request)
     {
         try {
 
-            Subject::insert([
+                        Subject::insert([
                 'subject' => $request->subject,
+                'course_id' => $request->course_id, // Add this line
                 'titel' => $request->title,
                 'duration' => $request->duration,
                 'starting_date' => $request->startdate,
@@ -187,11 +197,20 @@ class AdminController extends Controller
     }
 
     //delete subject
-    public function deleteSubject(Request $request)
+        public function deleteSubject(Request $request)
     {
         try {
+            $subject = Subject::with('getEnrolledStudents')->find($request->id);
 
-            Subject::where('id', $request->id)->delete();
+            if (!$subject) {
+                return response()->json(['success' => false, 'msg' => 'Subject not found!']);
+            }
+
+            if ($subject->getEnrolledStudents->count() > 0) {
+                return response()->json(['success' => false, 'msg' => 'Cannot delete batch. Students are enrolled in this batch!']);
+            }
+
+            $subject->delete();
             return response()->json(['success' => true, 'msg' => 'Subject deleted Successfully!']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'msg' => $e->getMessage()]);
