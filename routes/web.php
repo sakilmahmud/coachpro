@@ -51,13 +51,13 @@ Route::group(['middleware' => ['web', 'checkAdmin']], function () {
     Route::resource('admin/mock-tests', MockTestController::class);
     Route::resource('admin/questions', QuestionController::class);
     Route::get('/admin/questions/{question}/answers', [QuestionController::class, 'getAnswers']);
-        Route::get('/admin/batches', [AdminController::class, 'batches'])->name('batches');
-        Route::get('/admin/batch/{id}', [AdminController::class, 'batchDetail'])->name('batchDetail');
-        Route::post('/admin/enroll-student', [AdminController::class, 'enrollStudent'])->name('enrollStudent');
-        Route::post('/admin/upload-pdf', [AdminController::class, 'uploadPdf'])->name('uploadPdf');
-            Route::post('/admin/upload-video', [AdminController::class, 'uploadVideo'])->name('uploadVideo');
+    Route::get('/admin/batches', [AdminController::class, 'batches'])->name('batches');
+    Route::get('/admin/batch/{id}', [AdminController::class, 'batchDetail'])->name('batchDetail');
+    Route::post('/admin/enroll-student', [AdminController::class, 'enrollStudent'])->name('enrollStudent');
+    Route::post('/admin/upload-pdf', [AdminController::class, 'uploadPdf'])->name('uploadPdf');
+    Route::post('/admin/upload-video', [AdminController::class, 'uploadVideo'])->name('uploadVideo');
     Route::post('/admin/delete-pdf', [AdminController::class, 'deletePdf'])->name('deletePdf');
-        Route::post('/admin/delete-video', [AdminController::class, 'deleteVideo'])->name('deleteVideo');
+    Route::post('/admin/delete-video', [AdminController::class, 'deleteVideo'])->name('deleteVideo');
     Route::get('/admin/check-enrolled-students', [AdminController::class, 'checkEnrolledStudents'])->name('checkEnrolledStudents');
 
     //Batches route

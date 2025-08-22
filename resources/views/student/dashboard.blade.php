@@ -4,7 +4,7 @@
 <div class="text-right"><img  src="{{ asset('image/logost.png') }}" alt="Image" width="20%" height="20%"></div>
 <h2>Batches</h2>
 
-    <table class="table">
+    <table class="table table-bordered table-striped" id="enrolledBatchesTable">
 
         <thead>
             <th>#</th>
@@ -34,6 +34,14 @@
         </tbody>
 
     </table>
+
+    @push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#enrolledBatchesTable').DataTable();
+    });
+</script>
+@endpush
 
     
 

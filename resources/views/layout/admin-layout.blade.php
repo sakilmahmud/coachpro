@@ -68,6 +68,12 @@
     </nav>
     <!-- Page Content  -->
     <div id="content" class="p-4 p-md-5 pt-5">
+      <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+        @auth
+        <p style="margin-bottom: 0;">{{ Auth::user()->email }}</p>
+        <p style="margin-bottom: 0;">({{ Auth::user()->is_admin == 1 ? 'Admin' : 'Student' }})</p>
+        @endauth
+      </div>
       @yield('space-work')
     </div>
   </div>
