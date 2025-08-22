@@ -137,6 +137,8 @@ h5,
     background: transparent;
     color: #fff;
     text-decoration: none;
+    background: #f2761e;
+    border-bottom: 1px solid #f2761e;
 }
 #sidebar ul li.active > a:hover {
     background: #f2761e;

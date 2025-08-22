@@ -16,6 +16,14 @@
     .multiselect-dropdown {
       width: 100% !important;
     }
+
+    .dataTables_filter {
+      padding-bottom: 10px;
+    }
+
+    table.dataTable {
+      border-top: 1px solid;
+    }
   </style>
   <!--    <script>-->
   <!-- // Disable right-click on the page -->
@@ -36,21 +44,21 @@
       </div>
       <h1><a href="/admin/dashboard" class="logo"><img src="https://coachproconsulting.com/image/logo-new.png" alt="CoachPro Consulting Logo" style="max-width: 100%; height: auto;"></a></h1>
       <ul class="list-unstyled components mb-5">
-        <li class="active"> <a href="{{ route('admin.dashboard') }}"><span class="fa fa-tachometer mr-3"></span> Dashboard</a> </li>
-        <li class="active">
+        <li class="{{ Request::routeIs('admin.dashboard') ? 'active' : '' }}"> <a href="{{ route('admin.dashboard') }}"><span class="fa fa-tachometer mr-3"></span> Dashboard</a> </li>
+        <li class="{{ Request::routeIs('courses.*') ? 'active' : '' }}">
           <a href="{{ route('courses.index') }}"><span class="fa fa-book mr-3"></span> Courses</a>
         </li>
-        <li class="active"> <a href="{{ route('batches') }}"><span class="fa fa-book mr-3"></span> Batches</a></li>
-        <li class="active">
-          <a href="/admin/qna-ans"><span class="fa fa-question-circle mr-3"></span> Mock Test</a>
+        <li class="{{ Request::routeIs('batches') || Request::routeIs('batchDetail') ? 'active' : '' }}"> <a href="{{ route('batches') }}"><span class="fa fa-book mr-3"></span> Batches</a></li>
+        <li class="{{ Request::routeIs('mock-tests.*') || Request::routeIs('questions.*') ? 'active' : '' }}">
+          <a href="{{ route('mock-tests.index') }}"><span class="fa fa-question-circle mr-3"></span> Mock Test</a>
         </li>
-        <li class="active">
+        <li class="{{ Request::is('admin/students') ? 'active' : '' }}">
           <a href="/admin/students"><span class="fa fa-graduation-cap mr-3"></span> Students</a>
         </li>
-        <li class="active">
+        <li class="{{ Request::is('admin/flash') ? 'active' : '' }}">
           <a href="/admin/flash"><span class="fa fa-question-circle mr-3"></span> Flash Cards</a>
         </li>
-        <li class="active">
+        <li class="{{ Request::is('admin/studentquery') ? 'active' : '' }}">
           <a href="/admin/studentquery"><span class="fa fa-info mr-3"></span> View Student Query</a>
         </li>
         <li>

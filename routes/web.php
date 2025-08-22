@@ -8,6 +8,8 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SController;
+use App\Http\Controllers\MockTestController;
+use App\Http\Controllers\QuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +48,9 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::group(['middleware' => ['web', 'checkAdmin']], function () {
     Route::get('/admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::resource('admin/courses', CourseController::class);
+    Route::resource('admin/mock-tests', MockTestController::class);
+    Route::resource('admin/questions', QuestionController::class);
+    Route::get('/admin/questions/{question}/answers', [QuestionController::class, 'getAnswers']);
         Route::get('/admin/batches', [AdminController::class, 'batches'])->name('batches');
         Route::get('/admin/batch/{id}', [AdminController::class, 'batchDetail'])->name('batchDetail');
         Route::post('/admin/enroll-student', [AdminController::class, 'enrollStudent'])->name('enrollStudent');
@@ -118,7 +123,13 @@ Route::group(['middleware' => ['web', 'checkAdmin']], function () {
     Route::get('/pmirmptest7', [AdminController::class, 'pmirmptest7'])->name('pmirmp.test7');
     //Q&A Routes
     Route::get('/admin/qna-ans', [AdminController::class, 'qnaDashboard']);
-    Route::get('/admin/flash', [AdminController::class, 'flashDashboard']);
+    Route::get('/admin/flash', [AdminController::class, 'flashDashboard'])->name('flash-cards.index');
+    Route::get('/admin/flash-cards/{course_id}', [AdminController::class, 'showFlashQuestions'])->name('flash-cards.show');
+    Route::get('/admin/flash-cards/{course_id}/create', [AdminController::class, 'createFlashQuestion'])->name('flash-cards.create');
+    Route::post('/admin/flash-cards', [AdminController::class, 'storeFlashQuestion'])->name('flash-cards.store');
+    Route::get('/admin/flash-cards/{id}/edit', [AdminController::class, 'editFlashQuestion'])->name('flash-cards.edit');
+    Route::put('/admin/flash-cards/{id}', [AdminController::class, 'updateFlashQuestion'])->name('flash-cards.update');
+    Route::delete('/admin/flash-cards/{id}', [AdminController::class, 'destroyFlashQuestion'])->name('flash-cards.destroy');
     Route::post('/add-qna-ans', [AdminController::class, 'addQna'])->name('addQna');
     Route::post('/add-flash', [AdminController::class, 'addflash'])->name('addflash');
     ///edit flash cards

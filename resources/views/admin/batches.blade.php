@@ -367,9 +367,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                    <p id="deleteConfirmationMessage"></p>
-                    <input type="hidden" name="id" id="delete_subject_id">
-                </div>
+                        <p id="deleteConfirmationMessage"></p>
+                        <input type="hidden" name="id" id="delete_subject_id">
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -432,7 +432,7 @@
                     }
                 });
             });
-                        //delete subject
+            //delete subject
             $(".deleteButton").click(function() {
                 var subject_id = $(this).attr('data-id');
                 $("#delete_subject_id").val(subject_id);
@@ -441,7 +441,9 @@
                 $.ajax({
                     url: "{{ route('checkEnrolledStudents') }}", // New route to check enrolled students
                     type: "GET",
-                    data: { id: subject_id },
+                    data: {
+                        id: subject_id
+                    },
                     success: function(response) {
                         if (response.enrolled) {
                             $('#deleteConfirmationMessage').text('Students are enrolled in this batch. Deleting this batch will also remove their enrollment. Are you sure you want to proceed?');

@@ -55,7 +55,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="addCourseForm">
+            <form id="addCourseForm" method="POST" action="{{ route('courses.store') }}">
+                <div id="addCourseError" class="alert alert-danger" style="display:none;"></div>
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -150,6 +151,8 @@
                     if (response.success) {
                         $('#addCourseForm')[0].reset();
                         $('#addCourseModal').modal('hide');
+                        $('#addCourseForm #name').val(''); // Explicitly clear name field
+                        $('#addCourseForm #description').val(''); // Explicitly clear description field
                         location.reload();
                     } else {
                         // Show inline error instead of alert
@@ -157,7 +160,14 @@
                     }
                 },
                 error: function(xhr) {
-                    $('#addCourseError').text('An error occurred: ' + xhr.responseText).show();
+                    console.error('AJAX Error:', xhr);
+                    let errorMessage = 'An unknown error occurred.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        errorMessage = 'Server response: ' + xhr.responseText;
+                    }
+                    $('#addCourseError').text(errorMessage).show();
                 }
             });
         });

@@ -783,8 +783,8 @@ class AdminController extends Controller
 
     public function flashDashboard()
     {
-        $flashData = FlashQuestion::get();
-        return view('admin.flashDashboard', ['chal' =>  $flashData]);
+        $courses = Course::all();
+        return view('admin.flash_cards.courses', compact('courses'));
     }
     //// Add Flash
     public function addflash(Request $request)
@@ -1337,5 +1337,61 @@ class AdminController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'msg' => $e->getMessage()]);
         };
+    }
+
+    public function showFlashQuestions($course_id)
+    {
+        $course = Course::findOrFail($course_id);
+        $flashQuestions = FlashQuestion::where('course_id', $course_id)->get();
+        return view('admin.flash_cards.index', compact('course', 'flashQuestions'));
+    }
+
+    public function createFlashQuestion($course_id)
+    {
+        $course = Course::findOrFail($course_id);
+        return view('admin.flash_cards.create', compact('course'));
+    }
+
+    public function storeFlashQuestion(Request $request)
+    {
+        $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        FlashQuestion::create($request->all());
+
+        return redirect()->route('flash-cards.show', $request->course_id)->with('success', 'Flash Question created successfully.');
+    }
+
+    public function editFlashQuestion($id)
+    {
+        $flashQuestion = FlashQuestion::findOrFail($id);
+        $course = Course::findOrFail($flashQuestion->course_id);
+        return view('admin.flash_cards.edit', compact('flashQuestion', 'course'));
+    }
+
+    public function updateFlashQuestion(Request $request, $id)
+    {
+        $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $flashQuestion = FlashQuestion::findOrFail($id);
+        $flashQuestion->update($request->all());
+
+        return redirect()->route('flash-cards.show', $flashQuestion->course_id)->with('success', 'Flash Question updated successfully.');
+    }
+
+    public function destroyFlashQuestion($id)
+    {
+        $flashQuestion = FlashQuestion::findOrFail($id);
+        $courseId = $flashQuestion->course_id;
+        $flashQuestion->delete();
+
+        return redirect()->route('flash-cards.show', $courseId)->with('success', 'Flash Question deleted successfully.');
     }
 }

@@ -9,13 +9,23 @@ class Question extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'subject',
-        'title',
         'lavel',
         'explanation',
         'question',
-        'explaination'
+        'explaination',
+        'course_id',
+        'mock_test_id'
     ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function mockTest()
+    {
+        return $this->belongsTo(MockTest::class);
+    }
 
     public function usertestdata()
 {
