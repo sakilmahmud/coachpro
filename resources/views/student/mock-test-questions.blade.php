@@ -231,11 +231,11 @@ $(document).ready(function() {
         finishTest();
     });
 
-    $(window).on('beforeunload', function (e) {
+    /* $(window).on('beforeunload', function (e) {
         const confirmationMessage = 'Your data will be reset. Are you sure you want to leave?';
         e.returnValue = confirmationMessage;
         return confirmationMessage;
-    });
+    }); */
 
     $(window).on('unload', function () {
         localStorage.removeItem("startTime");

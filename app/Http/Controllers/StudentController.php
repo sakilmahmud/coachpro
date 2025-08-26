@@ -228,16 +228,22 @@ class StudentController extends Controller
 
     public function mockTestResult($mock_test_id)
     {
+        $mockTest = MockTest::with('course')->find($mock_test_id);
+        if (!$mockTest) {
+            abort(404, 'Mock Test not found.');
+        }
+
         $results = Result::where('user_id', Auth::id())
                         ->where('mock_test_id', $mock_test_id)
                         ->orderBy('created_at', 'desc')
                         ->get();
 
         if ($results->isEmpty()) {
-            abort(404, 'No results found for this mock test.');
+            // If no results, but mock test exists, still show the page with a message
+            return view('student.mock-test-result', compact('mockTest', 'results'));
         }
 
-        return view('student.mock-test-result', compact('results'));
+        return view('student.mock-test-result', compact('mockTest', 'results'));
     }
 
     public function mockTests()

@@ -1,170 +1,241 @@
 @extends('layout.student-layout')
 
 @section('space-work')
-<div class="text-right"><img src="{{ asset('image/logost.png') }}" alt="Image" width="20%" height="20%"></div>
-
-<h2>Mock Test Results</h2>
-
-<div class="container" style="height: 50px; background-color:#2F89FC; display: flex; align-items: center; justify-content: space-between;">
-    <div id="questionCount" style="color: white; font-size: 20px;"></div>
-    <div id="timer-container">
-        <div id="elapsedTime" hidden style="color: white; font-size: 16px;">Elapsed Time: 00:00:00</div>
-        <div id="remainingTime" hidden style="color: white; font-size: 20px;">Remaining Time: 04:00:00</div>
-    </div>
+<div class="container-fluid text-center">
+    @if($mockTest->course)
+        <p class="batch-name mb-0 pb-0">Batch: {{ $mockTest->course->name }}</p>
+    @endif
 </div>
-<br>
 
-<!-- Display Test History -->
-@php
-    $dataExists = false;
-    if (!$results->isEmpty()) {
-        $dataExists = true;
-    }
-@endphp
+<div class="container-fluid results-container mt-0 pt-0">
+    <h2 class="page-title">Your Mock Test Attempts</h2>
 
-<div class="container">
-    <div class="test-attempts">
-        @if ($dataExists)
-            @forelse ($results as $attempt)
-            <div class="test-attempt-link" style=" border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; text-decoration: none; background-color:#ffffff; width: 100%;">
-                <div class="progress-container" style="flex: 1; order: 1; padding: 10px;">
-                <div class="row">
-                    <div class="col-6">
-                       
-                        <canvas hidden id="attemptChart-{{$attempt->id}}" class="ca nvas" width="50" height="50"></canvas>
-                        <p class="text-center mt-5" style="color:black;">Marks:{{ $attempt->percentage}}% </p> 
-                    </div>
-                    <div class="col-6">
-                        <canvas  id="percentageChart-{{$attempt->id}}" class="canvas" width="50" height="50"></canvas>
+    @if($results->isEmpty())
+        <div class="alert alert-info text-center" role="alert">
+            You have not attempted this mock test yet.
+        </div>
+    @else
+        <div class="row">
+            @foreach($results as $attempt)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card result-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Attempt: {{ $results->count() - $loop->index }}</h5>
+                            <p class="card-text">Date: {{ $attempt->created_at->format('M d, Y H:i A') }}</p>
+                            <hr>
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <p class="stat-label">Correct</p>
+                                    <p class="stat-value correct">{{ $attempt->correct_count }}</p>
+                                </div>
+                                <div class="col-4">
+                                    <p class="stat-label">Incorrect</p>
+                                    <p class="stat-value incorrect">{{ $attempt->incorrect_count }}</p>
+                                </div>
+                                <div class="col-4">
+                                    <p class="stat-label">Unattempted</p>
+                                    <p class="stat-value unattempted">{{ $attempt->unattempted_count }}</p>
+                                </div>
+                            </div>
+                            <div class="text-center mb-3">
+                                <p class="percentage-value">{{ $attempt->percentage }}%</p>
+                                @if ($attempt->percentage >= 70)
+                                    <p class="result-status pass">Result: Pass</p>
+                                @else
+                                    <p class="result-status fail">Result: Fail</p>
+                                @endif
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="percentageChart-{{$attempt->id}}"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="statistics" style="flex: 1; order: 2; padding: 10px; text-align: center;">
-                <p style="color: #20a520; font-size: 16px; margin-bottom: 5px;"> Correct&nbsp;{{ $attempt->correct_count }}</p>
-                <p style="color: #ff2929; font-size: 16px; margin-bottom: 5px;">Incorrect&nbsp;{{ $attempt->incorrect_count }} </p>
-                <p style="color:  #EED202; font-size: 16px; margin-bottom: 5px;">Unattempted&nbsp;{{ $attempt->unattempted_count }}</p>
-            </div>
-            <div class="labels" style="flex: 1; order: 3; padding: 10px; text-align: center;">
-                <p style="color: #000000; font-size: 14px; margin-bottom: 5px;">Attempt ID: {{ $attempt->id }}</p>
-                <p style="color: #000000; font-size: 14px; margin-bottom: 5px;">Date: {{ $attempt->created_at }}</p>
-                @if ($attempt->percentage >= 70)
-                <p class="text-center" style="font-size: 26px; color: #20a520; font-weight: bold;">Result: Pass</p>
-                @else
-                <p class="text-center" style="font-size: 26px; color: #ff2929; font-weight: bold;">Result: Fail</p>
-                @endif
-            </div>
-            </div>
-            @empty
-            <p style="text-align: center;">You have not attempted any mock tests yet.</p>
-            @endforelse
-        @else
-            <p style="text-align: center;">You have not attempted any mock tests yet.</p>
-        @endif
-    </div>
+            @endforeach
+        </div>
+    @endif
 </div>
-
 
 <!-- JavaScript for Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-@foreach($results as $attempt)
-    var percentageData{{$attempt->id}} = {{ $attempt->percentage }};
-    var correctCount{{$attempt->id}} = {{ $attempt->correct_count }};
-    var incorrectCount{{$attempt->id}} = {{ $attempt->incorrect_count }};
-    var unattemptedCount{{$attempt->id}} = {{ $attempt->unattempted_count }};
+$(document).ready(function() {
+    @foreach($results as $attempt)
+        var correctCount{{$attempt->id}} = {{ $attempt->correct_count }};
+        var incorrectCount{{$attempt->id}} = {{ $attempt->incorrect_count }};
+        var unattemptedCount{{$attempt->id}} = {{ $attempt->unattempted_count }};
 
-    var canvas{{$attempt->id}} = document.getElementById('percentageChart-{{$attempt->id}}');
-    var canvas2{{$attempt->id}} = document.getElementById('attemptChart-{{$attempt->id}}');
+        var canvas{{$attempt->id}} = document.getElementById('percentageChart-{{$attempt->id}}');
 
-    if (canvas{{$attempt->id}}) {
-        var ctx{{$attempt->id}} = canvas{{$attempt->id}}.getContext('2d');
+        if (canvas{{$attempt->id}}) {
+            var ctx{{$attempt->id}} = canvas{{$attempt->id}}.getContext('2d');
 
-        var colors{{$attempt->id}} = ['#20a520', '#ff2929', ' #EED202'];
-        var data{{$attempt->id}} = {
-            datasets: [{
-                data: [correctCount{{$attempt->id}}, incorrectCount{{$attempt->id}}, unattemptedCount{{$attempt->id}}],
-                backgroundColor: colors{{$attempt->id}}
-            }]
-        };
+            var data{{$attempt->id}} = {
+                labels: ['Correct', 'Incorrect', 'Unattempted'],
+                datasets: [{
+                    data: [correctCount{{$attempt->id}}, incorrectCount{{$attempt->id}}, unattemptedCount{{$attempt->id}}],
+                    backgroundColor: ['#28a745', '#dc3545', '#ffc107'], // Green, Red, Yellow
+                    borderColor: ['#ffffff', '#ffffff', '#ffffff'],
+                    borderWidth: 1
+                }]
+            };
 
-        var chart{{$attempt->id}} = new Chart(ctx{{$attempt->id}}, {
-            type: 'pie',
-            data: data{{$attempt->id}},
-            options: {
-                legend: {
-                    display: false
+            var chart{{$attempt->id}} = new Chart(ctx{{$attempt->id}}, {
+                type: 'pie',
+                data: data{{$attempt->id}},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.raw;
+                                    return label;
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-        });
-    }
-@endforeach
+            });
+        }
+    @endforeach
+});
 </script>
 
 <style>
-.container {
-    max-width: 100%;
-}
+    body {
+        background-color: #f0f2f5;
+        font-family: 'Poppins', sans-serif;
+    }
 
-.test-attempt-link {
-    border: 1px solid #2F89FC;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    display: flex;
-    text-decoration: none;
-    background-color: #f0f8ff;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.attempt-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.progress-container {
-    flex: 1;
-    order: 1;
-    padding: 10px;
-    text-align: block;
-}
-
-.statistics {
-    flex: 1;
-    order: 2;
-    padding: 10px;
-    text-align: center;
-}
-
-.labels {
-    flex: 1;
-    order: 3;
-    padding: 10px;
-    text-align: center;
-}
-
-p {
-    font-size: 16px;
-    margin: 0;
-}
-
-.canvas {
-    height: 50px;
-    width: 50px;
-}
-
-@media (max-width: 768px) {
-    .attempt-info {
-        flex-direction: column;
+    .test-info-header {
         text-align: center;
+        margin-top: 20px;
+        margin-bottom: 30px;
     }
 
-    .labels, .statistics, .progress-container {
-        flex: 1;
-        order: unset;
-        padding: 10px;
+    .test-title {
+        font-size: 2.2rem;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-weight: 700;
     }
-}
+
+    .batch-name {
+        font-size: 1.3rem;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+
+    .results-container {
+        padding: 30px;
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2.5rem;
+        color: #333;
+        font-weight: 700;
+    }
+
+    .result-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+
+    .result-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        color: #007bff;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .card-text {
+        font-size: 0.95rem;
+        color: #777;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #888;
+        margin-bottom: 5px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .stat-value.correct {
+        color: #28a745;
+    }
+
+    .stat-value.incorrect {
+        color: #dc3545;
+    }
+
+    .stat-value.unattempted {
+        color: #ffc107;
+    }
+
+    .percentage-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #007bff;
+        margin-bottom: 10px;
+    }
+
+    .result-status {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .result-status.pass {
+        color: #28a745;
+    }
+
+    .result-status.fail {
+        color: #dc3545;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 150px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .alert-info {
+        background-color: #e0f7fa;
+        border-color: #b2ebf2;
+        color: #00796b;
+        font-size: 1.1rem;
+        padding: 20px;
+        border-radius: 10px;
+    }
 </style>
 @endsection
