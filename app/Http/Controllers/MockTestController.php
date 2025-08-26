@@ -42,6 +42,7 @@ class MockTestController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
+            'time' => 'required|integer|min:1',
         ]);
 
         \App\Models\MockTest::create($request->all());
@@ -87,6 +88,7 @@ class MockTestController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
+            'time' => 'required|integer|min:1',
         ]);
 
         $mockTest = \App\Models\MockTest::findOrFail($id);

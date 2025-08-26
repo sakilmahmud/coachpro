@@ -13,6 +13,7 @@ class MockTest extends Model
         'name',
         'description',
         'course_id',
+        'time',
     ];
 
     public function course()

@@ -9,6 +9,8 @@ use App\Models\ExamAttempt;
 use App\Models\ExamAnswer;
 use App\Models\ExamPayments;
 use App\Models\Package;
+use App\Models\MockTest;
+use App\Models\Question;
 use Illuminate\Support\Facades\Auth;
 
 use Razorpay\Api\Api;
@@ -202,5 +204,20 @@ class StudentController extends Controller
 
             return view('packagePaymentUSD',compact('message'));
         }
+    }
+
+    public function mockTests()
+    {
+        $mockTests = MockTest::all();
+        return view('student.mock-tests', compact('mockTests'));
+    }
+
+    public function mockTestQuestions($id)
+    {
+        $mockTest = MockTest::with('questions')->find($id);
+        if (!$mockTest) {
+            abort(404);
+        }
+        return view('student.mock-test-questions', compact('mockTest'));
     }
 }

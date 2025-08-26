@@ -22,7 +22,7 @@
                 <p><strong>Duration:</strong> {{ $batch->duration }}</p>
                 <p><strong>Start Date:</strong> {{ $batch->starting_date }}</p>
                 <p><strong>End Date:</strong> {{ $batch->end_date }}</p>
-                <p><strong>Explanation:</strong> {{ $batch->explnation }}</p>
+                <p><strong>Explanation:</strong> {{ $batch->explaination }}</p>
             </div>
         </div>
 

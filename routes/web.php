@@ -218,3 +218,18 @@ Route::group(['middleware' => ['web', 'checkStudent']], function () {
     Route::post('/studentQuery', [SController::class, 'studentQuery'])->name('studentQuery');
     Route::get('/load-next-section', [SController::class, 'loadNextSection'])->name('loadNextSection');
 });
+
+Route::group(['middleware' => ['checkStudent']], function () {
+    Route::get('/student/mock-tests', [App\Http\Controllers\StudentController::class, 'mockTests'])->name('student.mock.tests');
+    Route::get('/student/mock-test/{id}/questions', [App\Http\Controllers\StudentController::class, 'mockTestQuestions'])->name('student.mock.test.questions');
+    Route::get('/student/mock-test/{id}', [App\Http\Controllers\StudentController::class, 'mockTestDetails'])->name('student.mock.test.details');
+    Route::post('/student/mock-test/attempt', [App\Http\Controllers\StudentController::class, 'mockTestAttempt'])->name('student.mock.test.attempt');
+    Route::post('/student/mock-test/question', [App\Http\Controllers\StudentController::class, 'mockTestQuestion'])->name('student.mock.test.question');
+    Route::post('/student/mock-test/submit', [App\Http\Controllers\StudentController::class, 'mockTestSubmit'])->name('student.mock.test.submit');
+    Route::get('/student/mock-test/result/{id}', [App\Http\Controllers\StudentController::class, 'mockTestResult'])->name('student.mock.test.result');
+    Route::get('/student/mock-test/invoice/{id}', [App\Http\Controllers\StudentController::class, 'mockTestInvoice'])->name('student.mock.test.invoice');
+    Route::get('/student/mock-test/payment/{id}', [App\Http\Controllers\StudentController::class, 'mockTestPayment'])->name('student.mock.test.payment');
+    Route::post('/student/mock-test/payment/{id}', [App\Http\Controllers\StudentController::class, 'mockTestPaymentStore'])->name('student.mock.test.payment.store');
+    Route::get('/student/mock-test/payment/success', [App\Http\Controllers\StudentController::class, 'mockTestPaymentSuccess'])->name('student.mock.test.payment.success');
+    Route::get('/student/mock-test/payment/cancel', [App\Http\Controllers\StudentController::class, 'mockTestPaymentCancel'])->name('student.mock.test.payment.cancel');
+});

@@ -14,6 +14,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Time</th>
                 <th>Description</th>
                 <th>Actions</th>
             </tr>
@@ -23,6 +24,7 @@
             <tr>
                 <td>{{ $mockTest->id }}</td>
                 <td>{{ $mockTest->name }}</td>
+                <td>{{ $mockTest->time }} mins</td>
                 <td>{{ $mockTest->description }}</td>
                 <td>
                     <a href="{{ route('mock-tests.edit', $mockTest->id) }}" class="btn btn-sm btn-info">Edit</a>

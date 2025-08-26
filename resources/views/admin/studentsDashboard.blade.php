@@ -22,7 +22,6 @@
 				<th>Phone No</th>
 				<th>Alt Phone</th>
 				<th>Address</th>
-
 				<th>Edit</th>
 				<th>Delete</th>
 			</thead>
@@ -35,14 +34,11 @@
 				<tr>
 					<td>{{$counter++}}</td>
 					<td><a href="{{ route('student.details', ['id' => $student->id]) }}">{{ $student->name }}</a></td>
-
 					<td>{{ $student->email }}</td>
 					<td>{{ $student->country }}</td>
 					<td>{{ $student->phone_no }}</td>
 					<td>{{ $student->altphone_no }}</td>
 					<td>{{ $student->address }}</td>
-
-
 					<td>
 						<button type="button" data-id="{{ $student->id }}" data-name="{{ $student->name }}" data-email="{{ $student->email }}" data-country="{{ $student->country }}" data-phone="{{ $student->phone_no }}" data-alterphone="{{ $student->altphone_no }}" data-address="{{ $student->address }}" data-image="{{ $student->image }}" class="btn btn-info editButton" data-toggle="modal" data-target="#editStudentModal">
 							Edit

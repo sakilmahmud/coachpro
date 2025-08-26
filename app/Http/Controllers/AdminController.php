@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
 
-        public function adminDashboard()
+    public function adminDashboard()
     {
         $batchCount = Subject::count();
         $studentCount = User::where('is_admin', 0)->count();
@@ -139,7 +139,7 @@ class AdminController extends Controller
         }
     }
 
-        public function deleteVideo(Request $request)
+    public function deleteVideo(Request $request)
     {
         try {
             Videolink::findOrFail($request->id)->delete();
@@ -162,7 +162,7 @@ class AdminController extends Controller
     {
         try {
 
-                        Subject::insert([
+            Subject::insert([
                 'subject' => $request->subject,
                 'course_id' => $request->course_id, // Add this line
                 'titel' => $request->title,
@@ -188,7 +188,7 @@ class AdminController extends Controller
             $subject->duration = $request->duration;
             $subject->starting_date = $request->startdate;
             $subject->end_date = $request->enddate;
-            $subject->explnation = $request->explnation;
+            $subject->explnation = $request->explanation;
             $subject->save();
             return response()->json(['success' => true, 'msg' => 'Batch updated Successfully!']);
         } catch (\Exception $e) {
@@ -197,7 +197,7 @@ class AdminController extends Controller
     }
 
     //delete subject
-        public function deleteSubject(Request $request)
+    public function deleteSubject(Request $request)
     {
         try {
             $subject = Subject::with('getEnrolledStudents')->find($request->id);

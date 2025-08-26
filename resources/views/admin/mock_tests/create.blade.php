@@ -12,6 +12,10 @@
             <input type="text" class="form-control" id="name" name="name" required>
         </div>
         <div class="form-group">
+            <label for="time">Time (minutes)</label>
+            <input type="number" class="form-control" id="time" name="time" required min="1">
+        </div>
+        <div class="form-group">
             <label for="description">Description</label>
             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
         </div>

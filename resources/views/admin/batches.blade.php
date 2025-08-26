@@ -50,212 +50,6 @@
                         @endif
                     </tbody>
                 </table>
-
-                @push('scripts')
-                <script>
-                    $(document).ready(function() {
-                        $('#batchesTable').DataTable(); // Initialize Datatable
-
-                        $("#addSubject").submit(function(e) {
-                            e.preventDefault();
-                            var formData = $(this).serialize();
-                            $.ajax({
-                                url: "{{ route('addSubject') }}",
-                                type: "POST",
-                                data: formData,
-                                success: function(data) {
-                                    if (data.success == true) {
-                                        location.reload();
-                                    } else {
-                                        alert(data.msg);
-                                    }
-                                }
-                            });
-                        });
-
-                        // Edit Subject - Populate Modal
-                        $(".editButton").click(function() {
-                            var subject_id = $(this).attr('data-id');
-                            var subject = $(this).attr('data-subject');
-                            var course_id = $(this).attr('data-course_id');
-                            var duration = $(this).attr('data-duration');
-                            var startdate = $(this).attr('data-startdate');
-                            var enddate = $(this).attr('data-enddate');
-                            var explanation = $(this).attr('data-explanation');
-
-                            $("#edit_subject").val(subject);
-                            $("#edit_subject_id").val(subject_id);
-                            $("#edit_course_id").val(course_id);
-                            $("#edit_duration").val(duration);
-                            $("#edit_startdate").val(startdate);
-                            $("#edit_enddate").val(enddate);
-                            $("#edit_explanation").val(explanation);
-
-                            $('#editSubjectModel').modal('show'); // Show the edit modal
-                        });
-
-                        // Update Subject with AJAX
-                        $("#editSubject").submit(function(e) {
-                            e.preventDefault();
-                            var formData = $(this).serialize();
-                            $.ajax({
-                                url: "{{ route('editSubject') }}",
-                                type: "POST",
-                                data: formData,
-                                success: function(data) {
-                                    if (data.success == true) {
-                                        location.reload();
-                                    } else {
-                                        alert(data.msg);
-                                    }
-                                }
-                            });
-                        });
-
-                        // Delete Subject - Populate Modal
-                        $(".deleteButton").click(function() {
-                            var subject_id = $(this).attr('data-id');
-                            $("#delete_subject_id").val(subject_id);
-                            $('#deleteSubjectModel').modal('show'); // Show the delete modal
-                        });
-
-                        // Delete Subject with AJAX
-                        $("#deleteSubject").submit(function(e) {
-                            e.preventDefault();
-                            var formData = $(this).serialize();
-                            $.ajax({
-                                url: "{{ route('deleteSubject') }}",
-                                type: "POST",
-                                data: formData,
-                                success: function(data) {
-                                    if (data.success == true) {
-                                        location.reload();
-                                    } else {
-                                        alert(data.msg);
-                                    }
-                                }
-                            });
-                        });
-                    });
-                    //add questions part (existing code)
-                    $('.addQuestion').click(function() {
-                        var id = $(this).data('id'); // Use data('id') to get the attribute value
-                        $('#addExamId').val(id);
-                        $.ajax({
-                            url: "{{ route('getStudent') }}",
-                            type: "GET",
-                            data: {
-                                exam_id: id
-                            },
-                            success: function(data) {
-                                if (data.success === true) {
-                                    var questions = data.data;
-                                    var html = '';
-                                    if (questions.length > 0) {
-                                        for (let i = 0; i < questions.length; i++) {
-                                            html += `
-                                <tr>
-                                    <td><input type="checkbox" value="${questions[i]['id']}" name="questions_ids[]"></td>
-                                    <td>${questions[i]['email']}</td>
-                                    <td>${questions[i]['name']}</td>
-                                </tr>
-                            `;
-                                        }
-                                    } else {
-                                        html += `
-                            <tr>
-                                <td colspan="3">Users not Available!</td>
-                            </tr>`;
-                                    }
-                                    $('.addBody').html(html);
-                                } else {
-                                    alert(data.msg);
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(xhr.responseText);
-                                alert('An error occurred while fetching student data.');
-                            }
-                        });
-                    });
-                    $("#addQna").submit(function(e) {
-                        e.preventDefault();
-                        var formData = $(this).serialize();
-                        $.ajax({
-                            url: "{{ route('addStudents') }}",
-                            type: "POST",
-                            data: formData,
-                            success: function(data) {
-                                if (data.success === true) {
-                                    location.reload();
-                                } else {
-                                    alert(data.msg);
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(xhr.responseText);
-                                alert('An error occurred while adding questions.');
-                            }
-                        });
-                    });
-                    //see questions (existing code)
-                    $('.seeQuestions').click(function() {
-                        var id = $(this).attr('data-id');
-                        $.ajax({
-                            url: "{{ route('getStudentsee') }}",
-                            type: "GET",
-                            data: {
-                                exam_id: id
-                            },
-                            success: function(data) {
-                                console.log(data);
-                                var html = '';
-                                var questions = data.data;
-                                if (questions.length > 0) {
-                                    for (let i = 0; i < questions.length; i++) {
-                                        html += `
-                                <tr>
-                                    <td>` + (i + 1) + `</td>
-                                    <td>${questions[i]['email']}</td>
-                                    <td>${questions[i]['name']}</td>
-                                    <td>
-                                        <button class="btn btn-danger deleteQuestion" data-id="${questions[i]['id']}">Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                                    }
-                                } else {
-                                    html += `
-                            <tr>
-                                <td colspan="1">Students not available!</td>
-                            </tr>
-                        `;
-                                }
-                                $('.seeQuestionTable').html(html);
-                            }
-                        });
-                    });
-                    //delete question (existing code)
-                    $(document).on('click', '.deleteQuestion', function() {
-                        var id = $(this).attr('data-id');
-                        var obj = $(this);
-                        $.ajax({
-                            url: "{{ route('deleteExamQuestions') }}",
-                            type: "GET",
-                            data: {
-                                id: id
-                            },
-                            success: function(data) {
-                                if (data.success == true) {
-                                    obj.parent().parent().remove();
-                                } else {
-                                    alert(data.msg);
-                                }
-                            }
-                        })
-                    });
-                </script>
-                @endpush
             </div>
         </div>
     </section>
@@ -379,8 +173,12 @@
         </div>
     </div>
 
+
+    @push('scripts')
     <script>
         $(document).ready(function() {
+            $('#batchesTable').DataTable(); // Initialize Datatable
+
             $("#addSubject").submit(function(e) {
                 e.preventDefault();
                 var formData = $(this).serialize();
@@ -397,11 +195,12 @@
                     }
                 });
             });
-            //edit subject get value
+
+            // Edit Subject - Populate Modal
             $(".editButton").click(function() {
                 var subject_id = $(this).attr('data-id');
                 var subject = $(this).attr('data-subject');
-                var course_id = $(this).attr('data-course_id'); // New: Get course_id
+                var course_id = $(this).attr('data-course_id');
                 var duration = $(this).attr('data-duration');
                 var startdate = $(this).attr('data-startdate');
                 var enddate = $(this).attr('data-enddate');
@@ -409,13 +208,16 @@
 
                 $("#edit_subject").val(subject);
                 $("#edit_subject_id").val(subject_id);
-                $("#edit_course_id").val(course_id); // New: Set course_id
+                $("#edit_course_id").val(course_id);
                 $("#edit_duration").val(duration);
                 $("#edit_startdate").val(startdate);
                 $("#edit_enddate").val(enddate);
                 $("#edit_explanation").val(explanation);
+
+                $('#editSubjectModel').modal('show'); // Show the edit modal
             });
-            /////Replace and update code with ajax
+
+            // Update Subject with AJAX
             $("#editSubject").submit(function(e) {
                 e.preventDefault();
                 var formData = $(this).serialize();
@@ -432,31 +234,15 @@
                     }
                 });
             });
-            //delete subject
+
+            // Delete Subject - Populate Modal
             $(".deleteButton").click(function() {
                 var subject_id = $(this).attr('data-id');
                 $("#delete_subject_id").val(subject_id);
-
-                // Check if students are enrolled before showing the modal
-                $.ajax({
-                    url: "{{ route('checkEnrolledStudents') }}", // New route to check enrolled students
-                    type: "GET",
-                    data: {
-                        id: subject_id
-                    },
-                    success: function(response) {
-                        if (response.enrolled) {
-                            $('#deleteConfirmationMessage').text('Students are enrolled in this batch. Deleting this batch will also remove their enrollment. Are you sure you want to proceed?');
-                        } else {
-                            $('#deleteConfirmationMessage').text('Are you sure you want to delete this batch?');
-                        }
-                        $('#deleteSubjectModel').modal('show');
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Error checking enrolled students: ' + xhr.responseText);
-                    }
-                });
+                $('#deleteSubjectModel').modal('show'); // Show the delete modal
             });
+
+            // Delete Subject with AJAX
             $("#deleteSubject").submit(function(e) {
                 e.preventDefault();
                 var formData = $(this).serialize();
@@ -474,122 +260,6 @@
                 });
             });
         });
-        //add questions part
-        $('.addQuestion').click(function() {
-            var id = $(this).data('id'); // Use data('id') to get the attribute value
-            $('#addExamId').val(id);
-            $.ajax({
-                url: "{{ route('getStudent') }}",
-                type: "GET",
-                data: {
-                    exam_id: id
-                },
-                success: function(data) {
-                    if (data.success === true) {
-                        var questions = data.data;
-                        var html = '';
-                        if (questions.length > 0) {
-                            for (let i = 0; i < questions.length; i++) {
-                                html += `
-                                <tr>
-                                    <td><input type="checkbox" value="${questions[i]['id']}" name="questions_ids[]"></td>
-                                    <td>${questions[i]['email']}</td>
-                                    <td>${questions[i]['name']}</td>
-                                </tr>
-                            `;
-                            }
-                        } else {
-                            html += `
-                            <tr>
-                                <td colspan="3">Users not Available!</td>
-                            </tr>`;
-                        }
-                        $('.addBody').html(html);
-                    } else {
-                        alert(data.msg);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    alert('An error occurred while fetching student data.');
-                }
-            });
-        });
-        $("#addQna").submit(function(e) {
-            e.preventDefault();
-            var formData = $(this).serialize();
-            $.ajax({
-                url: "{{ route('addStudents') }}",
-                type: "POST",
-                data: formData,
-                success: function(data) {
-                    if (data.success === true) {
-                        location.reload();
-                    } else {
-                        alert(data.msg);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    alert('An error occurred while adding questions.');
-                }
-            });
-        });
-        //see questions
-        $('.seeQuestions').click(function() {
-            var id = $(this).attr('data-id');
-            $.ajax({
-                url: "{{ route('getStudentsee') }}",
-                type: "GET",
-                data: {
-                    exam_id: id
-                },
-                success: function(data) {
-                    console.log(data);
-                    var html = '';
-                    var questions = data.data;
-                    if (questions.length > 0) {
-                        for (let i = 0; i < questions.length; i++) {
-                            html += `
-                                <tr>
-                                    <td>` + (i + 1) + `</td>
-                                    <td>${questions[i]['email']}</td>
-                                    <td>${questions[i]['name']}</td>
-                                    <td>
-                                        <button class="btn btn-danger deleteQuestion" data-id="` + questions[i]['id'] + `">Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                        }
-                    } else {
-                        html += `
-                            <tr>
-                                <td colspan="1">Students not available!</td>
-                            </tr>
-                        `;
-                    }
-                    $('.seeQuestionTable').html(html);
-                }
-            });
-        });
-        //delete question
-        $(document).on('click', '.deleteQuestion', function() {
-            var id = $(this).attr('data-id');
-            var obj = $(this);
-            $.ajax({
-                url: "{{ route('deleteExamQuestions') }}",
-                type: "GET",
-                data: {
-                    id: id
-                },
-                success: function(data) {
-                    if (data.success == true) {
-                        obj.parent().parent().remove();
-                    } else {
-                        alert(data.msg);
-                    }
-                }
-            })
-        });
     </script>
+    @endpush
     @endsection
