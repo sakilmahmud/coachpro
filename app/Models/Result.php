@@ -11,6 +11,8 @@ class Result extends Model
     public $table = "results";
     protected $fillable = [
         'user_id',
+        'course_id',
+        'mock_test_id',
         'title',
         'subject',
         'attempt_id',
@@ -18,6 +20,5 @@ class Result extends Model
         'correct_count',
         'incorrect_count',
         'unattempted_count'
-      
     ];
 }
