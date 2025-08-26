@@ -21,4 +21,9 @@ class Result extends Model
         'incorrect_count',
         'unattempted_count'
     ];
+
+    public function mockTest()
+    {
+        return $this->belongsTo(MockTest::class);
+    }
 }

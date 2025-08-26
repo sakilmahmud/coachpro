@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Exam;
 use App\Models\Subject;
+use App\Models\MockTest;
+use App\Models\Result;
+use App\Models\Course;
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
@@ -79,20 +82,28 @@ class AuthController extends Controller
     }
 
     public function loadDashboard()
-    { {
-            $user = Auth::user();
+    {
+        $user = Auth::user();
 
-            // Now you have the user's ID in $user->id
-            $userId = $user->id;
-            // Retrieve the user by ID
-            $user = User::findOrFail($userId);
-            //dd($userId);
-            $subjectIds = Access::where('student_id', $user->id)->pluck('subject_id')->toArray();
-            $subjects = Subject::whereIn('id', $subjectIds)->get();
-        }
+        // Total Mock Tests
+        $totalMockTests = MockTest::count();
 
-        //dd(  $subjects );
-        return view('student.dashboard', ['exams' => $subjects]);
+        // Attempted Mock Tests
+        $attemptedMockTestCount = Result::where('user_id', $user->id)
+                                        ->distinct('mock_test_id')
+                                        ->count();
+
+        // Average Score
+        $averageScore = Result::where('user_id', $user->id)->avg('percentage');
+        $averageScore = round($averageScore ?? 0, 2); // Handle null if no results
+
+        // Recent Mock Test Results (Removed)
+
+        // Enrolled Courses
+        $enrolledCourseIds = Access::where('student_id', $user->id)->pluck('subject_id')->toArray();
+        $enrolledCourses = Course::whereIn('id', $enrolledCourseIds)->get();
+
+        return view('student.dashboard', compact('totalMockTests', 'attemptedMockTestCount', 'averageScore', 'enrolledCourses'));
     }
 
     public function logout(Request $request)

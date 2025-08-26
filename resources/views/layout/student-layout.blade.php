@@ -29,37 +29,36 @@
       </div>
       <h1><a href="/dashboard" class="logo"><img src="https://coachproconsulting.com/image/logo-new.png" alt="CoachPro Consulting Logo" style="max-width: 100%; height: auto;"></a></h1>
       <ul class="list-unstyled components mb-5">
-        <li class="active">
+        <li class="{{ Request::routeIs('student.dashboard') ? 'active' : '' }}">
           <a href="/dashboard"><span class="fa fa-book mr-3"></span> Dashboard</a>
         </li>
-        <li>
+        <li class="{{ Request::routeIs('student.mock.tests') ? 'active' : '' }}">
           <a href="{{route('student.mock.tests')}}"><span class="fa fa-list-alt mr-3"></span> Mock Tests</a>
         </li>
-        <!-- Question Reviews -->
         <li>
-          <a href="{{route('student.mock.tests.attempted')}}"><span class="fa fa-list-alt mr-3"></span> Review Attempted Tests</a>
+          <a href="{{route('student.mock.tests.attempted')}}" class="{{ Request::routeIs('student.mock.tests.attempted') ? 'active' : '' }}"><span class="fa fa-list-alt mr-3"></span> Review Attempted Tests</a>
         </li>
         <!-- Study Material -->
         <li class="menu-item" id="studyMaterial">
           <a href="#"><span class="fa fa-tasks mr-3"></span> Study Material</a>
           <ul class="list-unstyled components sub-menu">
             <li class="sub-menu-item">
-              <a href="{{route('study.pdf')}}">
+              <a href="{{route('study.pdf')}}" class="{{ Request::routeIs('study.pdf') ? 'active' : '' }}">
                 <span class="fa fa-book mr-3" style="margin-left: 30px;"></span> Pdfs
               </a>
             </li>
             <li class="sub-menu-item">
-              <a href="{{route('study.video')}}">
+              <a href="{{route('study.video')}}" class="{{ Request::routeIs('study.video') ? 'active' : '' }}">
                 <span class="fa fa-book mr-3" style="margin-left: 30px;"></span>Videos
               </a>
             </li>
             <!-- Add more study materials as needed -->
           </ul>
         </li>
-        <li>
-          <a href="{{route('flash.card')}}"><span class="fa fa-tasks mr-3"></span> flash Card</a>
+        <li class="{{ Request::routeIs('flash.card') ? 'active' : '' }}">
+          <a href="{{route('flash.card')}}"><span class="fa fa-tasks mr-3"></span> Flash Card</a>
         </li>
-        <li>
+        <li class="{{ Request::routeIs('query.text') ? 'active' : '' }}">
           <a href="{{route('query.text')}}"><span class="fa fa-tasks mr-3"></span> Query</a>
         </li>
         <li>
