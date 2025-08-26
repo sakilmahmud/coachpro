@@ -36,25 +36,8 @@
           <a href="{{route('student.mock.tests')}}"><span class="fa fa-list-alt mr-3"></span> Mock Tests</a>
         </li>
         <!-- Question Reviews -->
-        <li class="menu-item" id="questionReview">
-          <a href="#"><span class="fa fa-list-alt mr-3"></span> Question Review</a>
-          <ul class="list-unstyled components sub-menu">
-            <li class="sub-menu-item">
-              <a href="{{route('review.test1')}}"><span class="fa fa-list-alt mr-3" style="margin-left: 30px;"></span> Review Test 1</a>
-            </li>
-            <li class="sub-menu-item">
-              <a href="{{route('review.test2')}}"><span class="fa fa-list-alt mr-3" style="margin-left: 30px;"></span> Review Test 2</a>
-            </li>
-            <li class="sub-menu-item">
-              <a href="{{route('review.test3')}}"><span class="fa fa-list-alt mr-3" style="margin-left: 30px;"></span> Review Test 3</a>
-            </li>
-            <li class="sub-menu-item">
-              <a href="{{route('review.test4')}}"><span class="fa fa-list-alt mr-3" style="margin-left: 30px;"></span> Review Test 4</a>
-            </li>
-            <li class="sub-menu-item">
-              <a href="{{route('review.test5')}}"><span class="fa fa-list-alt mr-3" style="margin-left: 30px;"></span> Review Test 5</a>
-            </li>
-          </ul>
+        <li>
+          <a href="{{route('student.mock.tests.attempted')}}"><span class="fa fa-list-alt mr-3"></span> Review Attempted Tests</a>
         </li>
         <!-- Study Material -->
         <li class="menu-item" id="studyMaterial">

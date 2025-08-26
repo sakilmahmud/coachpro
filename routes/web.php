@@ -233,4 +233,5 @@ Route::group(['middleware' => ['checkStudent']], function () {
     Route::get('/student/mock-test/payment/success', [App\Http\Controllers\StudentController::class, 'mockTestPaymentSuccess'])->name('student.mock.test.payment.success');
     Route::get('/student/mock-test/payment/cancel', [App\Http\Controllers\StudentController::class, 'mockTestPaymentCancel'])->name('student.mock.test.payment.cancel');
     Route::post('/student/mock-test/submit-result', [App\Http\Controllers\StudentController::class, 'submitMockTestResult'])->name('student.mock.test.submit.result');
+    Route::get('/student/mock-tests/attempted', [App\Http\Controllers\StudentController::class, 'attemptedMockTests'])->name('student.mock.tests.attempted');
 });

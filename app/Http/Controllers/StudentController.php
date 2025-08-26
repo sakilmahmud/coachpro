@@ -288,4 +288,15 @@ class StudentController extends Controller
 
         return view('student.mock-test-questions', compact('mockTest', 'questions', 'answers', 'correctAnswers'));
     }
+
+    public function attemptedMockTests()
+    {
+        $attemptedMockTestIds = Result::where('user_id', Auth::id())
+                                    ->distinct('mock_test_id')
+                                    ->pluck('mock_test_id');
+
+        $attemptedMockTests = MockTest::whereIn('id', $attemptedMockTestIds)->get();
+
+        return view('student.attempted-mock-tests', compact('attemptedMockTests'));
+    }
 }
