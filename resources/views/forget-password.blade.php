@@ -404,8 +404,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 mx-auto mb-md-0 mb-4">
+                        <div class="col-md-4 ml-2">
                             <button class="submit-btn" name="send" value="Submit">Submit</button>
+                        </div>
+                        <div class="col-md-7 text-right mt-3">
+                            Remembered your password? <a href="/login" class="" style="font-size: 14px; color: black;"><b>Log in now</b></a>
                         </div>
                     </div>
                 </div>
