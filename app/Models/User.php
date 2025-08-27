@@ -24,6 +24,9 @@ class User extends Authenticatable
         'country',
         'altphone_no',
         'address',
+        'address_2',
+        'city',
+        'state',
         'image'
     ];
     public function accessSubjects()

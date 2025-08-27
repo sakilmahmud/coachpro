@@ -12,7 +12,7 @@
     <!--Schema-->
     <meta property="og:title" content=CoachPro Consulting | Learning Management System | Student Login>
     <meta property="og:site_name" content=CoachPro Consulting LMS>
-    <meta property="og:url" content=https://lms.coachproconsulting.com/>
+    <meta property="og:url" content=https://lms.coachproconsulting.com />
     <meta property="og:description" content="Access the CoachPro Consulting LMS for student login. Enhance your learning experience with our user-friendly system designed for professional development.">
     <meta property="og:type" content=business.business>
     <meta property="og:image" content=https://www.coachproconsulting.com/image/logo-new.png>
@@ -203,9 +203,9 @@
 <body>
     <header class="header-container">
         <div class="w-100 d-flex justify-content-end" style="padding: 0 5%;">
-            
+
             <a class="student_login mr-3" href="https://coachproconsulting.com/register" target="blank"><i class="fa fa-user-plus" aria-hidden="true"></i> New User Registration</a>
-            
+
             <a class="student_login mr-3" href="https://lms.coachproconsulting.com" target="blank"><i class="fa fa-graduation-cap" aria-hidden="true"></i> User Login</a>
 
             <a class="student_login" href="https://coachproconsulting.com/blogs" target="blank"><i class="fa fa-rss" aria-hidden="true"></i> Blog</a>
@@ -421,145 +421,152 @@
                             <input type="password" class="input" name="password" id="password" placeholder="Enter Password" required>
                         </div>
                     </div>
-                    <br>
                     <button class="submit-btn" name="send" value="Submit">Login</button>
+
+                    <div class="row mt-5">
+                        <div class="col-md-8">
+                            New on our platform? <a href="/register" style="font-size: 14px; color: black;"><b>Create an account</b></a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/forget-password" style="font-size: 14px; color: black;"><b>Forgot Password</b></a>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
-    </div>
 
-    <footer class=" text-lg-start text-white footer-container" style="background-color: #070707e5">
-        <section class="">
-            <div class="container  ">
-                <!-- Grid row -->
-                <div class="row">
-                    <!-- Grid column -->
-                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-                        <div class="footer-items">
-                            <!-- Links -->
-                            <h6 class="text-uppercase fw-bold">Contact Us</h6>
-                            <hr class="mb-3 mt-0 d-inline-block mx-auto" style="width: 60px; background-color: #F2761E; height: 2px" />
-                            <p><i class="fas fa-home mr-3"></i> <span>CoachPro Consulting Pvt. Ltd., Plot No. 3, Aadinath Enclave, Watika, Jaipur 303905</span></p>
-                            <p><i class="fas fa-envelope mr-3"></i> <span>info@coachproconsulting.com</span></p>
-                            <p><i class="fas fa-phone mr-3"></i> <span> + 91 9799932955</span></p>
-                        </div>
-                    </div>
-                    <!-- Grid column -->
-                    <!-- Grid column -->
-                    <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
-                        <div class="footer-items">
-                            <!-- Links -->
-                            <h6 class="text-uppercase fw-bold">Popular Courses</h6>
-                            <hr class="mb-3 mt-0 d-inline-block mx-auto" style="width: 60px; background-color: #F2761E; height: 2px" />
-                            <p>
-                                <a href="https://coachproconsulting.com/pmp" class="text-white">Project Management Professional (PMP)®</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/pgmp" class="text-white">Program Management Professional (PgMP)®</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/pfmp" class="text-white">Portfolio Management Professional (PfMP)®</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/pmi-rmp" class="text-white">Risk Management Professional (PMI-RMP)®</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/pmi-acp" class="text-white">Agile Certified Practitioner (PMI-ACP)®</a>
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Grid column -->
-                    <!-- Grid column -->
-                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-                        <div class="footer-items">
-                            <!-- Links -->
-                            <h6 class="text-uppercase fw-bold">Quick links</h6>
-                            <hr class="mb-3 mt-0 d-inline-block mx-auto" style="width: 60px; background-color: #F2761E; height: 2px" />
-                            <p>
-                                <a href="https://coachproconsulting.com/about-us" class="text-white">About Us</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/who-we-are" class="text-white">Who we are</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/classroom-training" class="text-white">Classroom Training</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/corporate-training" class="text-white">Corporate Training</a>
-                            </p>
-                            <p>
-                                <a href="https://coachproconsulting.com/contact-us" class="text-white">Contact Us</a>
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Grid column -->
-                    <!-- Grid column -->
-                    <!--Grid column-->
-                    <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <div class="footer-items">
-                            <h6 class="text-uppercase mb-3">Sign up to our newsletter</h6>
-                            <div class="form-outline">
-                                <form name="contactFormEmail" method="post">
-                                    <input type="email" id="form5Example2" class="form-control" placeholder="Enter Email" name="email" required />
-                                    <label class="form-label" for="form5Example2"></label>
+        <footer class=" text-lg-start text-white footer-container" style="background-color: #070707e5">
+            <section class="">
+                <div class="container  ">
+                    <!-- Grid row -->
+                    <div class="row">
+                        <!-- Grid column -->
+                        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                            <div class="footer-items">
+                                <!-- Links -->
+                                <h6 class="text-uppercase fw-bold">Contact Us</h6>
+                                <hr class="mb-3 mt-0 d-inline-block mx-auto" style="width: 60px; background-color: #F2761E; height: 2px" />
+                                <p><i class="fas fa-home mr-3"></i> <span>CoachPro Consulting Pvt. Ltd., Plot No. 3, Aadinath Enclave, Watika, Jaipur 303905</span></p>
+                                <p><i class="fas fa-envelope mr-3"></i> <span>info@coachproconsulting.com</span></p>
+                                <p><i class="fas fa-phone mr-3"></i> <span> + 91 9799932955</span></p>
                             </div>
-                            <button class="submit-btn btn btn-outline-white btn-block" name="sub" value="Submit" style="background-color: #F2761E; color: white;">Submit</button>
-                            </form>
-                            <p>
-                            <div class="row">
-                                <!-- TrustBox widget - Review Collector -->
-                                <div class="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="6558ad184cf0fc4d3a966a33" data-style-height="52px" data-style-width="100%">
-                                    <a href="https://www.trustpilot.com/review/coachproconsulting.com" target="_blank" rel="noopener">Trustpilot</a>
+                        </div>
+                        <!-- Grid column -->
+                        <!-- Grid column -->
+                        <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
+                            <div class="footer-items">
+                                <!-- Links -->
+                                <h6 class="text-uppercase fw-bold">Popular Courses</h6>
+                                <hr class="mb-3 mt-0 d-inline-block mx-auto" style="width: 60px; background-color: #F2761E; height: 2px" />
+                                <p>
+                                    <a href="https://coachproconsulting.com/pmp" class="text-white">Project Management Professional (PMP)®</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/pgmp" class="text-white">Program Management Professional (PgMP)®</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/pfmp" class="text-white">Portfolio Management Professional (PfMP)®</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/pmi-rmp" class="text-white">Risk Management Professional (PMI-RMP)®</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/pmi-acp" class="text-white">Agile Certified Practitioner (PMI-ACP)®</a>
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Grid column -->
+                        <!-- Grid column -->
+                        <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                            <div class="footer-items">
+                                <!-- Links -->
+                                <h6 class="text-uppercase fw-bold">Quick links</h6>
+                                <hr class="mb-3 mt-0 d-inline-block mx-auto" style="width: 60px; background-color: #F2761E; height: 2px" />
+                                <p>
+                                    <a href="https://coachproconsulting.com/about-us" class="text-white">About Us</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/who-we-are" class="text-white">Who we are</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/classroom-training" class="text-white">Classroom Training</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/corporate-training" class="text-white">Corporate Training</a>
+                                </p>
+                                <p>
+                                    <a href="https://coachproconsulting.com/contact-us" class="text-white">Contact Us</a>
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Grid column -->
+                        <!-- Grid column -->
+                        <!--Grid column-->
+                        <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                            <div class="footer-items">
+                                <h6 class="text-uppercase mb-3">Sign up to our newsletter</h6>
+                                <div class="form-outline">
+                                    <form name="contactFormEmail" method="post">
+                                        <input type="email" id="form5Example2" class="form-control" placeholder="Enter Email" name="email" required />
+                                        <label class="form-label" for="form5Example2"></label>
                                 </div>
-                                <!-- End TrustBox widget -->
+                                <button class="submit-btn btn btn-outline-white btn-block" name="sub" value="Submit" style="background-color: #F2761E; color: white;">Submit</button>
+                                </form>
+                                <p>
+                                <div class="row">
+                                    <!-- TrustBox widget - Review Collector -->
+                                    <div class="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="6558ad184cf0fc4d3a966a33" data-style-height="52px" data-style-width="100%">
+                                        <a href="https://www.trustpilot.com/review/coachproconsulting.com" target="_blank" rel="noopener">Trustpilot</a>
+                                    </div>
+                                    <!-- End TrustBox widget -->
+                                </div>
+                                </p>
                             </div>
-                            </p>
+                        </div>
+                        <!--Grid column-->
+                    </div>
+                    <div class="pmcbar">
+                        <p> "PMI®", "PMBOK®", "CAPM®", "PMP®", "PgMP®", "PfMP®", "PMI-RMP®", and "PMI-ACP®" are registered trademarks of the Project Management Institute, Inc.</p>
+                    </div>
+                    <!--Grid row-->
+                </div>
+                <div class="copybar" style="background-color: rgb(0, 0, 0);">
+                    <div class="container">
+                        <div class="copyouter d-flex">
+                            <div class="termsleft d-flex align-items-center mt-2">
+                                <span>Copyright © 2025</span>
+                                <a class="text-white" href="https://coachproconsulting.com/">CoachPro Consulting Pvt. Ltd.</a>
+                                <a class="text-white" href="https://coachproconsulting.com/faq">FAQ</a>
+                                <a class="text-white" href="https://coachproconsulting.com/terms-conditions">Terms & Conditions</a>
+                                <a class="text-white" href="https://coachproconsulting.com/refund-policy">Refund Policy</a>
+                                <a class="text-white" href="https://coachproconsulting.com/privacy-policy">Privacy Policy</a>
+                            </div>
+                            <div class="social-foot ml-auto d-flex align-items-center mt-2">
+                                <a href=" https://www.linkedin.com/company/coachproconsulting/" target="_blank" class="text-white me-4">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href=" https://www.facebook.com/CoachProConsulting" target="_blank" class="text-white me-4">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href=" https://twitter.com/CoachProConsult" target="_blank" class="text-white me-4">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href=" https://www.instagram.com/coachproconsulting/" target="_blank" class="text-white me-4">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href=" https://www.youtube.com/@CoachProConsulting" target="_blank" class="text-white me-4">
+                                    <i class="fa-brands fa-youtube"></i>
+                                </a>
+                                <a href="https://in.pinterest.com/coachproconsulting/" target="_blank" class="text-white me-4">
+                                    <i class="fab fa-pinterest"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <!--Grid column-->
                 </div>
-                <div class="pmcbar">
-                    <p> "PMI®", "PMBOK®", "CAPM®", "PMP®", "PgMP®", "PfMP®", "PMI-RMP®", and "PMI-ACP®" are registered trademarks of the Project Management Institute, Inc.</p>
-                </div>
-                <!--Grid row-->
-            </div>
-            <div class="copybar" style="background-color: rgb(0, 0, 0);">
-                <div class="container">
-                    <div class="copyouter d-flex">
-                        <div class="termsleft d-flex align-items-center mt-2">
-                            <span>Copyright © 2025</span>
-                            <a class="text-white" href="https://coachproconsulting.com/">CoachPro Consulting Pvt. Ltd.</a>
-                            <a class="text-white" href="https://coachproconsulting.com/faq">FAQ</a>
-                            <a class="text-white" href="https://coachproconsulting.com/terms-conditions">Terms & Conditions</a>
-                            <a class="text-white" href="https://coachproconsulting.com/refund-policy">Refund Policy</a>
-                            <a class="text-white" href="https://coachproconsulting.com/privacy-policy">Privacy Policy</a>
-                        </div>
-                        <div class="social-foot ml-auto d-flex align-items-center mt-2">
-                            <a href=" https://www.linkedin.com/company/coachproconsulting/" target="_blank" class="text-white me-4">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href=" https://www.facebook.com/CoachProConsulting" target="_blank" class="text-white me-4">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href=" https://twitter.com/CoachProConsult" target="_blank" class="text-white me-4">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href=" https://www.instagram.com/coachproconsulting/" target="_blank" class="text-white me-4">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href=" https://www.youtube.com/@CoachProConsulting" target="_blank" class="text-white me-4">
-                                <i class="fa-brands fa-youtube"></i>
-                            </a>
-                            <a href="https://in.pinterest.com/coachproconsulting/" target="_blank" class="text-white me-4">
-                            <i class="fab fa-pinterest"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-            </div>
-        </section>
+    </div>
+    </div>
+    </section>
     </footer>
 
     <!-- Modal -->

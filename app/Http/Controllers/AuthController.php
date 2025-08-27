@@ -39,13 +39,25 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'string|required|min:2',
             'email' => 'string|email|required|max:100|unique:users',
-            'password' => 'string|required|confirmed|min:6'
+            'password' => 'string|required|min:6',
+            'phone_no' => 'string|required',
+            'country' => 'string|required',
+            'address' => 'string|required',
+            'city' => 'string|required',
+            'state' => 'string|required',
         ]);
 
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->phone_no = $request->phone_no;
+        $user->altphone_no = $request->altphone_no;
+        $user->country = $request->country;
+        $user->address = $request->address;
+        $user->address_2 = $request->address_2;
+        $user->city = $request->city;
+        $user->state = $request->state;
         $user->save();
 
         return back()->with('success', 'Your Registration has been successfull.');
