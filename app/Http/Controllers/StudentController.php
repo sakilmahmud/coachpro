@@ -12,6 +12,8 @@ use App\Models\Package;
 use App\Models\MockTest;
 use App\Models\Question;
 use App\Models\Result;
+use App\Models\Access;
+use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 
 use Razorpay\Api\Api;
@@ -163,17 +165,17 @@ class StudentController extends Controller
 
     public function packagePaymentStatus(Request $request, $packageid)
     {
-        if($request->PayerID){
+        if ($request->PayerID) {
 
             $data = array(
-                'PayerID' => $request->PayerID 
+                'PayerID' => $request->PayerID
             );
 
-            $packageData = Package::where('id',$packageid)->get();
+            $packageData = Package::where('id', $packageid)->get();
 
             $exams = $packageData[0]['exam_id'];
 
-            foreach($exams as $exam){
+            foreach ($exams as $exam) {
                 ExamPayments::insert([
                     'exam_id' => $exam->id,
                     'user_id' => auth()->user()->id,
@@ -183,13 +185,11 @@ class StudentController extends Controller
 
             $message = 'Your payment has been done';
 
-            return view('packagePaymentUSD',compact('message'));
-
-        }
-        else{
+            return view('packagePaymentUSD', compact('message'));
+        } else {
             $message = 'Your payment failed!';
 
-            return view('packagePaymentUSD',compact('message'));
+            return view('packagePaymentUSD', compact('message'));
         }
     }
 
@@ -233,22 +233,63 @@ class StudentController extends Controller
             abort(404, 'Mock Test not found.');
         }
 
-        $results = Result::where('user_id', Auth::id())
-                        ->where('mock_test_id', $mock_test_id)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+        $latestResult = Result::where('user_id', Auth::id())
+            ->where('mock_test_id', $mock_test_id)
+            ->orderBy('created_at', 'desc')
+            ->first(); // Get only the latest result
 
-        if ($results->isEmpty()) {
-            // If no results, but mock test exists, still show the page with a message
-            return view('student.mock-test-result', compact('mockTest', 'results'));
+        if (!$latestResult) { // Check if a result exists
+            return view('student.mock-test-result', compact('mockTest'))->with('results', collect()); // Pass an empty collection if no results
         }
 
-        return view('student.mock-test-result', compact('mockTest', 'results'));
+        return view('student.mock-test-result', compact('mockTest', 'latestResult')); // Pass only the latest result
     }
 
-    public function mockTests()
+    public function studentCourses()
     {
-        $mockTests = MockTest::all();
+        $studentId = Auth::id();
+
+        // Get all Access records for the student, eager loading subject and its course and mockTests
+        $accessRecords = Access::where('student_id', $studentId)
+                            ->with('subject.course.mockTests')
+                            ->get();
+
+        // Initialize enrolledBatches as an empty collection
+        $enrolledBatches = collect();
+
+        // Iterate through each access record to build enrolledBatches
+        foreach ($accessRecords as $access) {
+            $subject = $access->subject;
+
+            // Ensure subject is not null before processing
+            if ($subject) {
+                $enrolledBatches->push((object)[
+                    'titel' => $subject->titel,
+                    'course_id' => $subject->course_id,
+                    'course_name' => $subject->course->name ?? 'N/A',
+                    'mockTests' => $subject->course->mockTests ?? collect(),
+                ]);
+            }
+        }
+
+        // Get all available courses
+        $allCourses = \App\Models\Course::all();
+
+        return view('student.courses', compact('allCourses', 'enrolledBatches'));
+    }
+
+    public function mockTests($course_id = null)
+    {
+        $studentId = Auth::id();
+        $subjectIds = Access::where('student_id', $studentId)->pluck('subject_id');
+        $courseIds = Subject::whereIn('id', $subjectIds)->pluck('course_id')->unique();
+
+        if ($course_id) {
+            $mockTests = MockTest::where('course_id', $course_id)->whereIn('course_id', $courseIds)->get();
+        } else {
+            $mockTests = MockTest::whereIn('course_id', $courseIds)->get();
+        }
+
         return view('student.mock-tests', compact('mockTests'));
     }
 
@@ -291,12 +332,74 @@ class StudentController extends Controller
 
     public function attemptedMockTests()
     {
-        $attemptedMockTestIds = Result::where('user_id', Auth::id())
-                                    ->distinct('mock_test_id')
-                                    ->pluck('mock_test_id');
+        $allAttempts = Result::where('user_id', Auth::id())
+            ->with('mockTest') // Eager load the associated MockTest for each result
+            ->orderBy('created_at', 'desc') // Order by latest attempt
+            ->get();
 
-        $attemptedMockTests = MockTest::whereIn('id', $attemptedMockTestIds)->get();
+        return view('student.attempted-mock-tests', compact('allAttempts'));
+    }
 
-        return view('student.attempted-mock-tests', compact('attemptedMockTests'));
+    public function profile()
+    {
+        $student = Auth::user();
+        return view('student.profile', compact('student'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'string|required|min:2',
+            'phone_no' => 'string|required',
+            'country' => 'string|required',
+            'address' => 'string|required',
+            'city' => 'string|required',
+            'state' => 'string|required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $student = Auth::user();
+        $student->name = $request->name;
+        $student->phone_no = $request->phone_no;
+        $student->altphone_no = $request->altphone_no;
+        $student->country = $request->country;
+        $student->address = $request->address;
+        $student->address_2 = $request->address_2;
+        $student->city = $request->city;
+        $student->state = $request->state;
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $student->image = $imageName;
+        }
+
+        $student->save();
+
+        return back()->with('success', 'Your profile has been updated successfully.');
+    }
+
+    public function changePassword()
+    {
+        return view('student.change-password');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+            return back()->with('error', 'Current password does not match!');
+        }
+
+        $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password successfully changed!');
     }
 }

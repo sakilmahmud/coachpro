@@ -24,7 +24,7 @@ class Subject extends Model
     }
     public function accessSubjects()
     {
-        return $this->hasMany(Access::class, 'id');
+        return $this->hasMany(Access::class, 'subject_id');
     }
 
     // New relationship to Course model

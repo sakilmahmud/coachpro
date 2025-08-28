@@ -11,8 +11,11 @@
 <div class="container-fluid quiz-container">
     <div class="quiz-header">
         <div id="questionCount" class="question-count"></div>
-        <div id="timer-container" class="timer-container">
-            <div id="remainingTime" class="remaining-time"></div>
+        <div class="d-flex align-items-center"> <!-- New div to group timer and finish button -->
+            <div id="timer-container" class="timer-container me-3"> <!-- Added me-3 for spacing -->
+                <div id="remainingTime" class="remaining-time"></div>
+            </div>
+            <button id="finished" class="btn btn-danger quiz-btn">Finish Test</button>
         </div>
     </div>
 
@@ -28,7 +31,7 @@
     <div class="quiz-navigation">
         <button id="prevButton" class="btn btn-secondary quiz-btn">Back</button>
         <button id="nextButton" class="btn btn-primary quiz-btn">Next</button>
-        <button id="finished" class="btn btn-danger quiz-btn">Finish Test</button>
+        
     </div>
 </div>
 
@@ -287,7 +290,7 @@ $(document).ready(function() {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         padding: 30px;
         margin-top: 30px;
-        max-width: 800px;
+        width: 75%; /* Changed from max-width */
         margin-left: auto;
         margin-right: auto;
     }
@@ -389,12 +392,15 @@ $(document).ready(function() {
     }
 
     .quiz-btn {
-        flex-grow: 1;
         padding: 12px 25px;
         font-size: 1.1rem;
         border-radius: 8px;
         font-weight: 600;
         transition: all 0.2s ease-in-out;
+    }
+
+    .quiz-navigation .quiz-btn {
+        flex-grow: 1;
     }
 
     .quiz-btn:hover {

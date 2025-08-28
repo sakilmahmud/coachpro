@@ -4,66 +4,76 @@
 <div class="container-fluid dashboard-container">
     <h2 class="page-title">Student Dashboard</h2>
 
+    <!-- Enrolled Batches Section -->
     <div class="row mb-4">
-        <!-- Total Mock Tests Card -->
-        <div class="col-md-4">
-            <div class="card dashboard-kpi-card">
-                <div class="card-body text-center">
-                    <i class="fa fa-file-text-o kpi-icon"></i>
-                    <h5 class="card-title kpi-title">Total Mock Tests</h5>
-                    <p class="kpi-value">{{ $totalMockTests }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Attempted Mock Tests Card -->
-        <div class="col-md-4">
-            <div class="card dashboard-kpi-card">
-                <div class="card-body text-center">
-                    <i class="fa fa-check-square-o kpi-icon"></i>
-                    <h5 class="card-title kpi-title">Attempted Tests</h5>
-                    <p class="kpi-value">{{ $attemptedMockTestCount }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Average Score Card -->
-        <div class="col-md-4">
-            <div class="card dashboard-kpi-card">
-                <div class="card-body text-center">
-                    <i class="fa fa-percent kpi-icon"></i>
-                    <h5 class="card-title kpi-title">Average Score</h5>
-                    <p class="kpi-value">{{ $averageScore }}%</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <!-- Enrolled Courses Section -->
         <div class="col-md-12">
             <div class="card dashboard-section-card">
                 <div class="card-header dashboard-section-header">
                     <h4 class="mb-0">Enrolled Batches</h4>
                 </div>
                 <div class="card-body">
-                    @if($enrolledCourses->isEmpty())
-                        <p class="text-center text-muted">You are not enrolled in any courses yet.</p>
+                    @if($enrolledBatches->isEmpty())
+                        <p class="text-center text-muted">You are not enrolled in any batches yet. Please contact admin to enroll a batch for a course.</p>
                     @else
                         <div class="row">
-                            @foreach($enrolledCourses as $course)
+                            @foreach($enrolledBatches as $batch)
                                 <div class="col-md-6 col-lg-4 mb-3">
                                     <div class="card course-card h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $course->name }}</h5>
-                                            <p class="card-text">{{ $course->description }}</p>
-                                            <a href="#" class="btn btn-sm btn-outline-primary">View Course</a>
+                                            <h5 class="card-title">{{ $batch->titel }}</h5>
+                                            <p class="card-text">Course: {{ $batch->course_name }}</p>
+                                            <a href="{{ route('student.mock.tests', ['course_id' => $batch->course_id]) }}" class="btn btn-sm btn-outline-primary">View Mock Tests</a>
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Enrolled Batches Count Card -->        <div class="col-md-3">
+            <div class="card dashboard-kpi-card">
+                <div class="card-body text-center">
+                    <i class="fa fa-users kpi-icon"></i>
+                    <h5 class="card-title kpi-title">Enrolled Batches</h5>
+                    <p class="kpi-value">{{ $enrolledBatches->count() }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Mock Tests Card -->
+        <div class="col-md-3">
+            <div class="card dashboard-kpi-card">
+                <div class="card-body text-center">
+                    <i class="fa fa-file-text-o kpi-icon"></i>
+                    <h5 class="card-title kpi-title">Total Mock Tests</h5>
+                    <p class="kpi-value">{{ $totalMockTests ?? 0 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attempted Mock Tests Card -->
+        <div class="col-md-3">
+            <div class="card dashboard-kpi-card">
+                <div class="card-body text-center">
+                    <i class="fa fa-check-square-o kpi-icon"></i>
+                    <h5 class="card-title kpi-title">Attempted Tests</h5>
+                    <p class="kpi-value">{{ $attemptedMockTestCount ?? 0 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Average Score Card -->
+        <div class="col-md-3">
+            <div class="card dashboard-kpi-card">
+                <div class="card-body text-center">
+                    <i class="fa fa-percent kpi-icon"></i>
+                    <h5 class="card-title kpi-title">Average Score</h5>
+                    <p class="kpi-value">{{ $averageScore ?? 0 }}%</p>
                 </div>
             </div>
         </div>
@@ -77,16 +87,16 @@
                     <h4 class="mb-0">Quick Actions</h4>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center gap-3">
-                    <a href="{{ route('student.mock.tests') }}" class="btn btn-lg btn-success quick-action-btn">
+                    <a href="{{ $enrolledBatches->isEmpty() ? '#' : route('student.mock.tests') }}" class="btn btn-lg btn-success quick-action-btn {{ $enrolledBatches->isEmpty() ? 'disabled' : '' }}">
                         <i class="fa fa-play-circle"></i> Start New Test
                     </a>
-                    <a href="{{ route('student.mock.tests.attempted') }}" class="btn btn-lg btn-info quick-action-btn">
+                    <a href="{{ $enrolledBatches->isEmpty() ? '#' : route('student.mock.tests.attempted') }}" class="btn btn-lg btn-info quick-action-btn {{ $enrolledBatches->isEmpty() ? 'disabled' : '' }}">
                         <i class="fa fa-history"></i> Review Past Results
                     </a>
-                    <a href="{{ route('flash.card') }}" class="btn btn-lg btn-warning quick-action-btn">
+                    <a href="{{ $enrolledBatches->isEmpty() ? '#' : route('flash.card') }}" class="btn btn-lg btn-warning quick-action-btn {{ $enrolledBatches->isEmpty() ? 'disabled' : '' }}">
                         <i class="fa fa-lightbulb-o"></i> Practice Flashcards
                     </a>
-                    <a href="{{ route('query.text') }}" class="btn btn-lg btn-danger quick-action-btn">
+                    <a href="{{ $enrolledBatches->isEmpty() ? '#' : route('query.text') }}" class="btn btn-lg btn-danger quick-action-btn {{ $enrolledBatches->isEmpty() ? 'disabled' : '' }}">
                         <i class="fa fa-question-circle"></i> Submit Query
                     </a>
                 </div>

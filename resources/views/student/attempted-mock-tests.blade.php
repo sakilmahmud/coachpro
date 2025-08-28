@@ -5,22 +5,26 @@
 <div class="container-fluid mock-tests-container">
     <h2 class="page-title">Attempted Mock Tests</h2>
 
-    @if($attemptedMockTests->isEmpty())
+    @if($allAttempts->isEmpty())
         <div class="alert alert-info text-center" role="alert">
             You have not attempted any mock tests yet.
         </div>
     @else
         <div class="row">
-            @foreach($attemptedMockTests as $mockTest)
+            @foreach($allAttempts as $attempt)
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card mock-test-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $mockTest->title }}</h5>
-                            <p class="card-text description">{{ $mockTest->description }}</p>
+                            <h5 class="card-title">{{ $attempt->mockTest->name ?? 'N/A' }}</h5> <!-- Use mockTest relationship -->
+                            <p class="card-text description">
+                                Attempted on: {{ $attempt->created_at->format('M d, Y H:i A') }}<br>
+                                Score: {{ $attempt->percentage }}%<br>
+                                Correct: {{ $attempt->correct_count }}, Incorrect: {{ $attempt->incorrect_count }}, Unattempted: {{ $attempt->unattempted_count }}
+                            </p>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="test-time"><i class="fa fa-clock-o"></i> {{ $mockTest->time }} minutes</span>
+                                <span class="test-time"><i class="fa fa-clock-o"></i> {{ $attempt->mockTest->time ?? 'N/A' }} minutes</span>
                             </div>
-                            <a href="{{ route('student.mock.test.result', $mockTest->id) }}" class="btn btn-primary view-results-btn">View Results</a>
+                            <a href="{{ route('student.mock.test.result', $attempt->mock_test_id) }}" class="btn btn-primary view-results-btn">View Details</a>
                         </div>
                     </div>
                 </div>

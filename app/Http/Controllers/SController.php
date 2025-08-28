@@ -270,22 +270,24 @@ private function getCurrentAttempt($userId, $title, $subject)
 
     {
 
-        {
+        
             $user = Auth::user();
 
             // Now you have the user's ID in $user->id
             $userId = $user->id;
             // Retrieve the user by ID
-            $user = User::findOrFail($userId);
+            
             //dd($userId);
-            $subjectIds = Access::where('student_id', $user->id)->pluck('subject_id')->toArray();
-            $subjects = Subject::whereIn('id', $subjectIds)->pluck('titel');
-            
+            $subjectIds = Access::where('student_id', $userId)->pluck('subject_id')->toArray();
 
-           $flash = FlashQuestion::whereIn('subject', $subjects)->paginate(1);
+            // Get course IDs associated with these subjects
+            $courseIds = Subject::whereIn('id', $subjectIds)->pluck('course_id')->unique()->toArray();
+
+            // Fetch flash questions based on course_id
+            $flash = FlashQuestion::whereIn('course_id', $courseIds)->paginate(1);
 
             
-    }
+    
 
         //             dd(  $flash);
         //             return view('student.dashboard',['exams'=>$subjects]);
@@ -335,10 +337,14 @@ private function getCurrentAttempt($userId, $title, $subject)
         $user = Auth::user();
         $userId = $user->id;
         $subjectIds = Access::where('student_id', $userId)->pluck('subject_id')->toArray();
-        $subjects = Pdf::whereIn('subject_id', $subjectIds)->get();
+        $pdfs = Pdf::whereIn('subject_id', $subjectIds)->get();
 
-       //dd($subjectIds); 
-        return view('student.studypdf',['subjects'=>$subjects]);
+        // Get enrolled courses for consistent layout
+        $enrolledSubjectIds = Access::where('student_id', $userId)->pluck('subject_id');
+        $enrolledCourseIds = Subject::whereIn('id', $enrolledSubjectIds)->pluck('course_id')->unique();
+        $enrolledCourses = \App\Models\Course::whereIn('id', $enrolledCourseIds)->get();
+
+        return view('student.study-materials-pdfs', compact('pdfs', 'enrolledCourses'));
      }
      public function studyvideo()
      {
@@ -346,8 +352,14 @@ private function getCurrentAttempt($userId, $title, $subject)
         $user = Auth::user();
         $userId = $user->id;
         $subjectIds = Access::where('student_id', $userId)->pluck('subject_id')->toArray();
-        $subjects = Videolink::whereIn('subject_id', $subjectIds)->get();
-        return view('student.studyvideo',['subjects'=>$subjects]);
+        $videolinks = Videolink::whereIn('subject_id', $subjectIds)->get();
+
+        // Get enrolled courses for consistent layout
+        $enrolledSubjectIds = Access::where('student_id', $userId)->pluck('subject_id');
+        $enrolledCourseIds = Subject::whereIn('id', $enrolledSubjectIds)->pluck('course_id')->unique();
+        $enrolledCourses = \App\Models\Course::whereIn('id', $enrolledCourseIds)->get();
+
+        return view('student.study-materials-videos', compact('videolinks', 'enrolledCourses'));
      }
 
      public function testreview1()

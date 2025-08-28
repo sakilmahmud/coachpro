@@ -13,4 +13,9 @@ class Course extends Model
         'name',
         'description',
     ];
+
+    public function mockTests()
+    {
+        return $this->hasMany(MockTest::class);
+    }
 }

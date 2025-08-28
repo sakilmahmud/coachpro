@@ -192,7 +192,7 @@ Route::group(['middleware' => ['web', 'checkAdmin']], function () {
 });
 
 Route::group(['middleware' => ['web', 'checkStudent']], function () {
-    Route::get('/dashboard', [AuthController::class, 'loadDashboard']);
+    Route::get('/dashboard', [AuthController::class, 'loadDashboard'])->name('student.dashboard');
     Route::get('/exam/{id}', [ExamController::class, 'loadExamDashboard']);
 
     Route::get('/Mocktest/{testsubject}/{title}', [SController::class, 'mocktest'])->name('mock.test');
@@ -204,8 +204,8 @@ Route::group(['middleware' => ['web', 'checkStudent']], function () {
     Route::get('/testreview3', [SController::class, 'testreview3'])->name('review.test3');
     Route::get('/testreview4', [SController::class, 'testreview4'])->name('review.test4');
     Route::get('/testreview5', [SController::class, 'testreview5'])->name('review.test5');
-    Route::get('/studypdf', [SController::class, 'studypdf'])->name('study.pdf');
-    Route::get('/studyvideo', [SController::class, 'studyvideo'])->name('study.video');
+    Route::get('/student/study-materials/pdfs', [SController::class, 'studypdf'])->name('student.study-materials.pdfs');
+    Route::get('/student/study-materials/videos', [SController::class, 'studyvideo'])->name('student.study-materials.videos');
     Route::get('/Mocktest1', [SController::class, 'mocktest1'])->name('mock.test1');
     Route::get('/Mocktest2', [SController::class, 'mocktest2'])->name('mock.test2');
     Route::get('/Mocktest3', [SController::class, 'mocktest3'])->name('mock.test3');
@@ -220,7 +220,8 @@ Route::group(['middleware' => ['web', 'checkStudent']], function () {
 });
 
 Route::group(['middleware' => ['checkStudent']], function () {
-    Route::get('/student/mock-tests', [App\Http\Controllers\StudentController::class, 'mockTests'])->name('student.mock.tests');
+    Route::get('/student/courses', [App\Http\Controllers\StudentController::class, 'studentCourses'])->name('student.courses');
+    Route::get('/student/mock-tests/{course_id?}', [App\Http\Controllers\StudentController::class, 'mockTests'])->name('student.mock.tests');
     Route::get('/student/mock-test/{id}/questions', [App\Http\Controllers\StudentController::class, 'mockTestQuestions'])->name('student.mock.test.questions');
     Route::get('/student/mock-test/{id}', [App\Http\Controllers\StudentController::class, 'mockTestDetails'])->name('student.mock.test.details');
     Route::post('/student/mock-test/attempt', [App\Http\Controllers\StudentController::class, 'mockTestAttempt'])->name('student.mock.test.attempt');
@@ -234,4 +235,8 @@ Route::group(['middleware' => ['checkStudent']], function () {
     Route::get('/student/mock-test/payment/cancel', [App\Http\Controllers\StudentController::class, 'mockTestPaymentCancel'])->name('student.mock.test.payment.cancel');
     Route::post('/student/mock-test/submit-result', [App\Http\Controllers\StudentController::class, 'submitMockTestResult'])->name('student.mock.test.submit.result');
     Route::get('/student/mock-tests/attempted', [App\Http\Controllers\StudentController::class, 'attemptedMockTests'])->name('student.mock.tests.attempted');
+    Route::get('/student/profile', [App\Http\Controllers\StudentController::class, 'profile'])->name('student.profile');
+    Route::post('/student/profile', [App\Http\Controllers\StudentController::class, 'updateProfile'])->name('student.profile.update');
+    Route::get('/student/change-password', [App\Http\Controllers\StudentController::class, 'changePassword'])->name('student.change-password');
+    Route::post('/student/change-password', [App\Http\Controllers\StudentController::class, 'updatePassword'])->name('student.update-password');
 });

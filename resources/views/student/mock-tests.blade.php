@@ -26,6 +26,7 @@
             @endforeach
         </div>
     @endif
+    <a href="{{ url()->previous() }}" class="btn btn-secondary mt-3">Go Back</a>
 </div>
 
 <style>

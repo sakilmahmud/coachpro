@@ -16,11 +16,11 @@ class Access extends Model
 
    public function user()
   {
-      return $this->belongsTo(User::class, 'id');
+      return $this->belongsTo(User::class, 'student_id');
   }
 
   public function subject()
   {
-      return $this->belongsTo(Subject::class, 'id');
+      return $this->belongsTo(Subject::class, 'subject_id');
   }
 }

@@ -27,28 +27,31 @@
           <span class="sr-only">Toggle Menu</span>
         </button>
       </div>
-      <h1><a href="/dashboard" class="logo"><img src="https://coachproconsulting.com/image/logo-new.png" alt="CoachPro Consulting Logo" style="max-width: 100%; height: auto;"></a></h1>
+      <h1><a href="{{ route('student.dashboard') }}" class="logo"><img src="https://coachproconsulting.com/image/logo-new.png" alt="CoachPro Consulting Logo" style="max-width: 100%; height: auto;"></a></h1>
       <ul class="list-unstyled components mb-5">
         <li class="{{ Request::routeIs('student.dashboard') ? 'active' : '' }}">
-          <a href="/dashboard"><span class="fa fa-book mr-3"></span> Dashboard</a>
+          <a href="{{ route('student.dashboard') }}"><span class="fa fa-book mr-3"></span> Dashboard</a>
+        </li>
+        <li class="{{ Request::routeIs('student.courses') ? 'active' : '' }}">
+          <a href="{{ route('student.courses') }}"><span class="fa fa-book mr-3"></span> My Courses</a>
         </li>
         <li class="{{ Request::routeIs('student.mock.tests') ? 'active' : '' }}">
           <a href="{{route('student.mock.tests')}}"><span class="fa fa-list-alt mr-3"></span> Mock Tests</a>
         </li>
-        <li>
-          <a href="{{route('student.mock.tests.attempted')}}" class="{{ Request::routeIs('student.mock.tests.attempted') ? 'active' : '' }}"><span class="fa fa-list-alt mr-3"></span> Review Attempted Tests</a>
+        <li class="{{ Request::routeIs('student.mock.tests.attempted') ? 'active' : '' }}">
+          <a href="{{route('student.mock.tests.attempted')}}"><span class="fa fa-list-alt mr-3"></span> Review Attempted Tests</a>
         </li>
         <!-- Study Material -->
         <li class="menu-item" id="studyMaterial">
           <a href="#"><span class="fa fa-tasks mr-3"></span> Study Material</a>
           <ul class="list-unstyled components sub-menu">
             <li class="sub-menu-item">
-              <a href="{{route('study.pdf')}}" class="{{ Request::routeIs('study.pdf') ? 'active' : '' }}">
+              <a href="{{route('student.study-materials.pdfs')}}" class="{{ Request::routeIs('student.study-materials.pdfs') ? 'active' : '' }}">
                 <span class="fa fa-book mr-3" style="margin-left: 30px;"></span> Pdfs
               </a>
             </li>
             <li class="sub-menu-item">
-              <a href="{{route('study.video')}}" class="{{ Request::routeIs('study.video') ? 'active' : '' }}">
+              <a href="{{route('student.study-materials.videos')}}" class="{{ Request::routeIs('student.study-materials.videos') ? 'active' : '' }}">
                 <span class="fa fa-book mr-3" style="margin-left: 30px;"></span>Videos
               </a>
             </li>
@@ -57,6 +60,12 @@
         </li>
         <li class="{{ Request::routeIs('flash.card') ? 'active' : '' }}">
           <a href="{{route('flash.card')}}"><span class="fa fa-tasks mr-3"></span> Flash Card</a>
+        </li>
+        <li class="{{ Request::routeIs('student.profile') ? 'active' : '' }}" style="display: none;">
+            <a href="{{ route('student.profile') }}"><span class="fa fa-user mr-3"></span> My Profile</a>
+        </li>
+        <li class="{{ Request::routeIs('student.change-password') ? 'active' : '' }}" style="display: none;">
+            <a href="{{ route('student.change-password') }}"><span class="fa fa-key mr-3"></span> Change Password</a>
         </li>
         <li class="{{ Request::routeIs('query.text') ? 'active' : '' }}">
           <a href="{{route('query.text')}}"><span class="fa fa-tasks mr-3"></span> Query</a>
@@ -70,12 +79,40 @@
 
     <!-- Page Content  -->
     <div id="content" class="p-4 p-md-5 pt-5">
-      <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+      <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; align-items: center;">
         @auth
+        @if(Auth::user()->image)
+            <img src="{{ asset('images/'.Auth::user()->image) }}" alt="Profile Picture" class="img-thumbnail rounded-circle" width="40" height="40">
+        @endif
         <p style="margin-bottom: 0;">{{ Auth::user()->email }}</p>
         <p style="margin-bottom: 0;">({{ Auth::user()->is_admin == 1 ? 'Admin' : 'Student' }})</p>
         @endauth
       </div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('student.dashboard') }}">Dashboard</a></li>
+            @if(Request::routeIs('student.courses'))
+                <li class="breadcrumb-item active" aria-current="page">My Courses</li>
+            @endif
+            @if(Request::routeIs('student.mock.tests'))
+                <li class="breadcrumb-item"><a href="{{ route('student.courses') }}">My Courses</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Mock Tests</li>
+            @endif
+            @if(Request::routeIs('student.mock.tests.attempted'))
+                <li class="breadcrumb-item"><a href="{{ route('student.mock.tests') }}">Mock Tests</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Review Attempted Tests</li>
+            @endif
+            @if(Request::routeIs('student.profile'))                <li class="breadcrumb-item active" aria-current="page">My Profile</li>            @endif            @if(Request::routeIs('student.change-password'))                <li class="breadcrumb-item"><a href="{{ route('student.profile') }}">My Profile</a></li>                <li class="breadcrumb-item active" aria-current="page">Change Password</li>            @endif
+            @if(Request::routeIs('student.study-materials.pdfs'))
+                <li class="breadcrumb-item"><a href="#">Study Material</a></li>
+                <li class="breadcrumb-item active" aria-current="page">PDFs</li>
+            @endif
+            @if(Request::routeIs('student.study-materials.videos'))
+                <li class="breadcrumb-item"><a href="#">Study Material</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Videos</li>
+            @endif
+        </ol>
+    </nav>
       @yield('space-work')
     </div>
   </div>

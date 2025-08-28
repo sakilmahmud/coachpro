@@ -97,8 +97,37 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        // Total Mock Tests
-        $totalMockTests = MockTest::count();
+        // Get all Access records for the student, eager loading subject and its course and mockTests
+        $accessRecords = Access::where('student_id', $user->id)
+                            ->with('subject.course.mockTests')
+                            ->get();
+
+        // Initialize enrolledBatches as an empty collection
+        $enrolledBatches = collect();
+
+        // Iterate through each access record to build enrolledBatches
+        foreach ($accessRecords as $access) {
+            $subject = $access->subject;
+
+            // Ensure subject is not null before processing
+            if ($subject) {
+                $enrolledBatches->push((object)[
+                    'titel' => $subject->titel,
+                    'course_id' => $subject->course_id,
+                    'course_name' => $subject->course->name ?? 'N/A',
+                    'mockTests' => $subject->course->mockTests ?? collect(),
+                ]);
+            }
+        }
+
+        // Calculate total mock tests based on enrolled batches
+        $totalMockTests = 0;
+        foreach ($enrolledBatches as $batch) {
+            $totalMockTests += count($batch->mockTests);
+        }
+
+        // Calculate enrolled batches count
+        $enrolledBatchesCount = $enrolledBatches->count(); // Add this line
 
         // Attempted Mock Tests
         $attemptedMockTestCount = Result::where('user_id', $user->id)
@@ -109,13 +138,40 @@ class AuthController extends Controller
         $averageScore = Result::where('user_id', $user->id)->avg('percentage');
         $averageScore = round($averageScore ?? 0, 2); // Handle null if no results
 
-        // Recent Mock Test Results (Removed)
+        return view('student.dashboard', compact('totalMockTests', 'attemptedMockTestCount', 'averageScore', 'enrolledBatches', 'enrolledBatchesCount')); // Pass enrolledBatchesCount
+    }
 
-        // Enrolled Courses
-        $enrolledCourseIds = Access::where('student_id', $user->id)->pluck('subject_id')->toArray();
-        $enrolledCourses = Course::whereIn('id', $enrolledCourseIds)->get();
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'string|required|min:2',
+            'phone_no' => 'string|required',
+            'country' => 'string|required',
+            'address' => 'string|required',
+            'city' => 'string|required',
+            'state' => 'string|required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
-        return view('student.dashboard', compact('totalMockTests', 'attemptedMockTestCount', 'averageScore', 'enrolledCourses'));
+        $user = Auth::user();
+        $user->name = $request->name;
+        $user->phone_no = $request->phone_no;
+        $user->altphone_no = $request->altphone_no;
+        $user->country = $request->country;
+        $user->address = $request->address;
+        $user->address_2 = $request->address_2;
+        $user->city = $request->city;
+        $user->state = $request->state;
+
+        if ($request->hasFile('image')) {
+            $imageName = time().'.'.$request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $user->image = $imageName;
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Your profile has been updated successfully.');
     }
 
     public function logout(Request $request)

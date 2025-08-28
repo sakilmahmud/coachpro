@@ -8,50 +8,51 @@
 </div>
 
 <div class="container-fluid results-container mt-0 pt-0">
-    <h2 class="page-title">Your Mock Test Attempts</h2>
+    <h2 class="page-title">Your Latest Mock Test Result</h2>
 
-    @if($results->isEmpty())
+    @if(!$latestResult)
         <div class="alert alert-info text-center" role="alert">
             You have not attempted this mock test yet.
         </div>
     @else
-        <div class="row">
-            @foreach($results as $attempt)
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card result-card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Attempt: {{ $results->count() - $loop->index }}</h5>
-                            <p class="card-text">Date: {{ $attempt->created_at->format('M d, Y H:i A') }}</p>
-                            <hr>
-                            <div class="row text-center mb-3">
-                                <div class="col-4">
-                                    <p class="stat-label">Correct</p>
-                                    <p class="stat-value correct">{{ $attempt->correct_count }}</p>
-                                </div>
-                                <div class="col-4">
-                                    <p class="stat-label">Incorrect</p>
-                                    <p class="stat-value incorrect">{{ $attempt->incorrect_count }}</p>
-                                </div>
-                                <div class="col-4">
-                                    <p class="stat-label">Unattempted</p>
-                                    <p class="stat-value unattempted">{{ $attempt->unattempted_count }}</p>
-                                </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 mb-4"> <!-- Adjust column size for single card -->
+                <div class="card result-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $mockTest->name ?? 'Mock Test Result' }}</h5>
+                        <p class="card-text">Date: {{ $latestResult->created_at->format('M d, Y H:i A') }}</p>
+                        <hr>
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <p class="stat-label">Correct</p>
+                                <p class="stat-value correct">{{ $latestResult->correct_count }}</p>
                             </div>
-                            <div class="text-center mb-3">
-                                <p class="percentage-value">{{ $attempt->percentage }}%</p>
-                                @if ($attempt->percentage >= 70)
-                                    <p class="result-status pass">Result: Pass</p>
-                                @else
-                                    <p class="result-status fail">Result: Fail</p>
-                                @endif
+                            <div class="col-4">
+                                <p class="stat-label">Incorrect</p>
+                                <p class="stat-value incorrect">{{ $latestResult->incorrect_count }}</p>
                             </div>
-                            <div class="chart-container">
-                                <canvas id="percentageChart-{{$attempt->id}}"></canvas>
+                            <div class="col-4">
+                                <p class="stat-label">Unattempted</p>
+                                <p class="stat-value unattempted">{{ $latestResult->unattempted_count }}</p>
                             </div>
+                        </div>
+                        <div class="text-center mb-3">
+                            <p class="percentage-value">{{ $latestResult->percentage }}%</p>
+                            @if ($latestResult->percentage >= 70)
+                                <p class="result-status pass">Result: Pass</p>
+                            @else
+                                <p class="result-status fail">Result: Fail</p>
+                            @endif
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="percentageChart-{{$latestResult->id}}"></canvas>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('student.mock.tests.attempted') }}" class="btn btn-primary">View All Past Results</a>
         </div>
     @endif
 </div>
@@ -61,29 +62,29 @@
 
 <script>
 $(document).ready(function() {
-    @foreach($results as $attempt)
-        var correctCount{{$attempt->id}} = {{ $attempt->correct_count }};
-        var incorrectCount{{$attempt->id}} = {{ $attempt->incorrect_count }};
-        var unattemptedCount{{$attempt->id}} = {{ $attempt->unattempted_count }};
+    @if($latestResult) // Only initialize chart if a result exists
+        var correctCount = {{ $latestResult->correct_count }};
+        var incorrectCount = {{ $latestResult->incorrect_count }};
+        var unattemptedCount = {{ $latestResult->unattempted_count }};
 
-        var canvas{{$attempt->id}} = document.getElementById('percentageChart-{{$attempt->id}}');
+        var canvas = document.getElementById('percentageChart-{{$latestResult->id}}');
 
-        if (canvas{{$attempt->id}}) {
-            var ctx{{$attempt->id}} = canvas{{$attempt->id}}.getContext('2d');
+        if (canvas) {
+            var ctx = canvas.getContext('2d');
 
-            var data{{$attempt->id}} = {
+            var data = {
                 labels: ['Correct', 'Incorrect', 'Unattempted'],
                 datasets: [{
-                    data: [correctCount{{$attempt->id}}, incorrectCount{{$attempt->id}}, unattemptedCount{{$attempt->id}}],
+                    data: [correctCount, incorrectCount, unattemptedCount],
                     backgroundColor: ['#28a745', '#dc3545', '#ffc107'], // Green, Red, Yellow
                     borderColor: ['#ffffff', '#ffffff', '#ffffff'],
                     borderWidth: 1
                 }]
             };
 
-            var chart{{$attempt->id}} = new Chart(ctx{{$attempt->id}}, {
+            var chart = new Chart(ctx, {
                 type: 'pie',
-                data: data{{$attempt->id}},
+                data: data,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -108,7 +109,7 @@ $(document).ready(function() {
                 }
             });
         }
-    @endforeach
+    @endif
 });
 </script>
 
