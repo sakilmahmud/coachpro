@@ -1,19 +1,25 @@
 @extends('layout.student-layout')
 
 @section('space-work')
+<style>
+    .pdf_item i{
+        background: #fff;
+        padding: 5px;
+        border-radius: 5px;
+    }
+</style>
     <div class="container study-materials-container">
         <h2 class="section-title text-center mb-4">Study Materials: PDFs</h2>
         <div class="row">
             @forelse($pdfs as $pdf)
                 <div class="col-md-4 mb-4">
                     <div class="card study-material-card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex align-items-center mb-3">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <div class="pdf_item d-flex align-items-center justify-content-center mb-3">
                                 <i class="fa fa-file-pdf-o fa-2x text-danger me-3"></i> <!-- PDF icon -->
-                                <h5 class="card-title text-primary m-0">{{ $pdf->name }}</h5>
+                                <h5 class="card-title text-primary m-0">{{ $pdf->topic }}</h5>
                             </div>
-                            <p class="card-text text-muted flex-grow-1">{{ Str::limit($pdf->description, 100) }}</p>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <div class="d-flex justify-content-center align-items-center mt-auto">
                                 <div class="d-flex justify-content-center align-items-center mt-auto">
                                 <button type="button" class="btn btn-sm btn-outline-light view-pdf-btn"
                                         data-bs-toggle="modal" data-bs-target="#pdfViewerModal"

@@ -81,46 +81,8 @@ Route::group(['middleware' => ['web', 'checkAdmin']], function () {
     Route::get('/get-exam-detail/{id}', [AdminController::class, 'getExamDetail'])->name('getExamDetail');
     Route::post('/update-exam', [AdminController::class, 'updateExam'])->name('updateExam');
     Route::post('/delete-exam', [AdminController::class, 'deleteExam'])->name('deleteExam');
-    /// Show Question Subject Wise
-    Route::get('/pfmptest1', [AdminController::class, 'pfmptest1'])->name('pfmp.test1');
-    Route::get('/pfmptest2', [AdminController::class, 'pfmptest2'])->name('pfmp.test2');
-    Route::get('/pfmptest3', [AdminController::class, 'pfmptest3'])->name('pfmp.test3');
-    Route::get('/pfmptest4', [AdminController::class, 'pfmptest4'])->name('pfmp.test4');
-    Route::get('/pfmptest5', [AdminController::class, 'pfmptest5'])->name('pfmp.test5');
-    Route::get('/pfmptest6', [AdminController::class, 'pfmptest6'])->name('pfmp.test6');
-    Route::get('/pfmptest7', [AdminController::class, 'pfmptest7'])->name('pfmp.test7');
-    //////PGMP Question Show
-    Route::get('/pgmptest1', [AdminController::class, 'pgmptest1'])->name('pgmp.test1');
-    Route::get('/pgmptest2', [AdminController::class, 'pgmptest2'])->name('pgmp.test2');
-    Route::get('/pgmptest3', [AdminController::class, 'pgmptest3'])->name('pgmp.test3');
-    Route::get('/pgmptest4', [AdminController::class, 'pgmptest4'])->name('pgmp.test4');
-    Route::get('/pgmptest5', [AdminController::class, 'pgmptest5'])->name('pgmp.test5');
-    Route::get('/pgmptest6', [AdminController::class, 'pgmptest6'])->name('pgmp.test6');
-    Route::get('/pgmptest7', [AdminController::class, 'pgmptest7'])->name('pgmp.test7');
-    /////PMP Question Show
-    Route::get('/pmptest1', [AdminController::class, 'pmptest1'])->name('pmp.test1');
-    Route::get('/pmptest2', [AdminController::class, 'pmptest2'])->name('pmp.test2');
-    Route::get('/pmptest3', [AdminController::class, 'pmptest3'])->name('pmp.test3');
-    Route::get('/pmptest4', [AdminController::class, 'pmptest4'])->name('pmp.test4');
-    Route::get('/pmptest5', [AdminController::class, 'pmptest5'])->name('pmp.test5');
-    Route::get('/pmptest6', [AdminController::class, 'pmptest6'])->name('pmp.test6');
-    Route::get('/pmptest7', [AdminController::class, 'pmptest7'])->name('pmp.test7');
-    ////PMI-ACP Question Show
-    Route::get('/pmiacptest1', [AdminController::class, 'pmiacptest1'])->name('pmiacp.test1');
-    Route::get('/pmiacptest2', [AdminController::class, 'pmiacptest2'])->name('pmiacp.test2');
-    Route::get('/pmiacptest3', [AdminController::class, 'pmiacptest3'])->name('pmiacp.test3');
-    Route::get('/pmiacptest4', [AdminController::class, 'pmiacptest4'])->name('pmiacp.test4');
-    Route::get('/pmiacptest5', [AdminController::class, 'pmiacptest5'])->name('pmiacp.test5');
-    Route::get('/pmiacptest6', [AdminController::class, 'pmiacptest6'])->name('pmiacp.test6');
-    Route::get('/pmiacptest7', [AdminController::class, 'pmiacptest7'])->name('pmiacp.test7');
-    ////PMI_RMP Question show
-    Route::get('/pmirmptest1', [AdminController::class, 'pmirmptest1'])->name('pmirmp.test1');
-    Route::get('/pmirmptest2', [AdminController::class, 'pmirmptest2'])->name('pmirmp.test2');
-    Route::get('/pmirmptest3', [AdminController::class, 'pmirmptest3'])->name('pmirmp.test3');
-    Route::get('/pmirmptest4', [AdminController::class, 'pmirmptest4'])->name('pmirmp.test4');
-    Route::get('/pmirmptest5', [AdminController::class, 'pmirmptest5'])->name('pmirmp.test5');
-    Route::get('/pmirmptest6', [AdminController::class, 'pmirmptest6'])->name('pmirmp.test6');
-    Route::get('/pmirmptest7', [AdminController::class, 'pmirmptest7'])->name('pmirmp.test7');
+    Route::post('/admin/upload-editor-image', [AdminController::class, 'uploadEditorImage'])->name('upload.editor.image');
+   
     //Q&A Routes
     Route::get('/admin/qna-ans', [AdminController::class, 'qnaDashboard']);
     Route::get('/admin/flash', [AdminController::class, 'flashDashboard'])->name('flash-cards.index');
@@ -234,7 +196,7 @@ Route::group(['middleware' => ['checkStudent']], function () {
     Route::get('/student/mock-test/payment/success', [App\Http\Controllers\StudentController::class, 'mockTestPaymentSuccess'])->name('student.mock.test.payment.success');
     Route::get('/student/mock-test/payment/cancel', [App\Http\Controllers\StudentController::class, 'mockTestPaymentCancel'])->name('student.mock.test.payment.cancel');
     Route::post('/student/mock-test/submit-result', [App\Http\Controllers\StudentController::class, 'submitMockTestResult'])->name('student.mock.test.submit.result');
-    Route::get('/student/mock-tests/attempted', [App\Http\Controllers\StudentController::class, 'attemptedMockTests'])->name('student.mock.tests.attempted');
+    Route::get('/student/mock-tests-attempted', [App\Http\Controllers\StudentController::class, 'attemptedMockTests'])->name('student.mock.tests.attempted');
     Route::get('/student/profile', [App\Http\Controllers\StudentController::class, 'profile'])->name('student.profile');
     Route::post('/student/profile', [App\Http\Controllers\StudentController::class, 'updateProfile'])->name('student.profile.update');
     Route::get('/student/change-password', [App\Http\Controllers\StudentController::class, 'changePassword'])->name('student.change-password');

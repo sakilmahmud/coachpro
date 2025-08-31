@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Videolink extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     public $table = "video_link";
     protected $fillable = [
         'subject_id',

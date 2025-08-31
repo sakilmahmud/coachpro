@@ -139,7 +139,7 @@
 
     .kpi-icon {
         font-size: 3.5rem;
-        color: #007bff;
+        color: #000;
         margin-bottom: 15px;
     }
 
@@ -263,7 +263,7 @@
     .course-card .card-title {
         font-size: 1.2rem;
         font-weight: 600;
-        color: #007bff;
+        color: #000;
     }
 
     .course-card .card-text {

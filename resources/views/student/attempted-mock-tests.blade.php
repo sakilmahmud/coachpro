@@ -70,7 +70,7 @@
 
     .card-title {
         font-size: 1.8rem;
-        color: #007bff;
+        color: #000;
         margin-bottom: 15px;
         font-weight: 600;
     }
@@ -91,7 +91,7 @@
 
     .test-time i {
         margin-right: 8px;
-        color: #007bff;
+        color: #000;
     }
 
     .view-results-btn {

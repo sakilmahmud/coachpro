@@ -10,7 +10,7 @@
         <input type="hidden" name="course_id" value="{{ $course->id }}">
         <div class="form-group">
             <label for="question">Question</label>
-            <textarea class="form-control" id="question" name="question" rows="5" required></textarea>
+            <textarea class="form-control summernote" id="question" name="question" rows="5" required></textarea>
         </div>
         <div class="form-group">
             <label for="lavel">Level</label>
@@ -31,14 +31,44 @@
                         <input type="radio" name="correct_answer" value="{{ $i }}" aria-label="Radio button for following text input" required> &nbsp; Correct
                     </div>
                 </div>
+            </div>
+            @endfor
         </div>
-        @endfor
+        <div class="form-group">
+            <label for="explanation">Explanation</label>
+            <textarea class="form-control summernote" id="explanation" name="explanation" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn theme-primary mt-3">Create Question</button>
+    </form>
 </div>
-<div class="form-group">
-    <label for="explanation">Explanation</label>
-    <textarea class="form-control" id="explanation" name="explanation" rows="3"></textarea>
-</div>
-<button type="submit" class="btn btn-primary mt-3">Create Question</button>
-</form>
-</div>
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('.summernote').summernote({
+            height: 300,
+            callbacks: {
+                onImageUpload: function(files) {
+                    let editor = $(this);
+                    let data = new FormData();
+                    data.append("image", files[0]);
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "{{ route('upload.editor.image') }}",
+                        type: "POST",
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            editor.summernote('insertImage', response.url);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+@endpush
 @endsection
+

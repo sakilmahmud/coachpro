@@ -233,7 +233,7 @@ class AdminController extends Controller
 
         // Save the PDF to a storage disk (e.g., 'public' disk)
         $path = $request->file('pdf')->storeAs('pdfs', $originalFileName, 'public');
-
+        dd($path, Storage::disk('public')->exists($path));
         if (!$path) {
             return response()->json(['success' => false, 'msg' => 'Failed to save the PDF.']);
         }
@@ -1393,5 +1393,27 @@ class AdminController extends Controller
         $flashQuestion->delete();
 
         return redirect()->route('flash-cards.show', $courseId)->with('success', 'Flash Question deleted successfully.');
+    }
+
+    public function uploadEditorImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        try {
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->file('image')->storeAs('images', $imageName, 'public');
+
+            if (!$path) {
+                return response()->json(['success' => false, 'message' => 'Failed to save the image.']);
+            }
+
+            $url = asset('storage/' . $path);
+
+            return response()->json(['success' => true, 'url' => $url]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

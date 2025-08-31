@@ -209,14 +209,14 @@
     }
 
     .pagination-btn.next-btn {
-        background-color: #007bff;
+        background-color: #000000ff;
         /* Blue for next */
-        border-color: #007bff;
+        border-color: #000000ff;
     }
 
     .pagination-btn.next-btn:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+        background-color: #000000ff;
+        border-color: #000000ff;
         transform: translateY(-2px);
     }
 

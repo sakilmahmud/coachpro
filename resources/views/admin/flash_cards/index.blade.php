@@ -22,8 +22,8 @@
                 @foreach($flashQuestions as $flashQuestion)
                     <tr>
                         <td>{{ $flashQuestion->id }}</td>
-                        <td>{{ $flashQuestion->question }}</td>
-                        <td>{{ $flashQuestion->answer }}</td>
+                        <td>{!! $flashQuestion->question !!}</td>
+                        <td>{!! $flashQuestion->answer !!}</td>
                         <td>
                             <a href="{{ route('flash-cards.edit', $flashQuestion->id) }}" class="btn btn-sm btn-info">Edit</a>
                             <form action="{{ route('flash-cards.destroy', $flashQuestion->id) }}" method="POST" style="display:inline-block;">

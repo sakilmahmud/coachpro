@@ -42,7 +42,7 @@
           <a href="{{route('student.mock.tests.attempted')}}"><span class="fa fa-list-alt mr-3"></span> Review Attempted Tests</a>
         </li>
         <!-- Study Material -->
-        <li class="menu-item" id="studyMaterial">
+        <li class="menu-item {{ Request::routeIs('student.study-materials.pdfs') || Request::routeIs('student.study-materials.videos') ? 'active' : '' }}" id="studyMaterial">
           <a href="#"><span class="fa fa-tasks mr-3"></span> Study Material</a>
           <ul class="list-unstyled components sub-menu">
             <li class="sub-menu-item">
@@ -88,31 +88,6 @@
         <p style="margin-bottom: 0;">({{ Auth::user()->is_admin == 1 ? 'Admin' : 'Student' }})</p>
         @endauth
       </div>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('student.dashboard') }}">Dashboard</a></li>
-            @if(Request::routeIs('student.courses'))
-                <li class="breadcrumb-item active" aria-current="page">My Courses</li>
-            @endif
-            @if(Request::routeIs('student.mock.tests'))
-                <li class="breadcrumb-item"><a href="{{ route('student.courses') }}">My Courses</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Mock Tests</li>
-            @endif
-            @if(Request::routeIs('student.mock.tests.attempted'))
-                <li class="breadcrumb-item"><a href="{{ route('student.mock.tests') }}">Mock Tests</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Review Attempted Tests</li>
-            @endif
-            @if(Request::routeIs('student.profile'))                <li class="breadcrumb-item active" aria-current="page">My Profile</li>            @endif            @if(Request::routeIs('student.change-password'))                <li class="breadcrumb-item"><a href="{{ route('student.profile') }}">My Profile</a></li>                <li class="breadcrumb-item active" aria-current="page">Change Password</li>            @endif
-            @if(Request::routeIs('student.study-materials.pdfs'))
-                <li class="breadcrumb-item"><a href="#">Study Material</a></li>
-                <li class="breadcrumb-item active" aria-current="page">PDFs</li>
-            @endif
-            @if(Request::routeIs('student.study-materials.videos'))
-                <li class="breadcrumb-item"><a href="#">Study Material</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Videos</li>
-            @endif
-        </ol>
-    </nav>
       @yield('space-work')
     </div>
   </div>

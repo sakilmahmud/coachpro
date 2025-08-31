@@ -6,7 +6,7 @@
         <div class="col-md-8 col-lg-6">
             <div class="card query-card">
                 <div class="card-header query-card-header">
-                    <h2 class="query-title">Submit Your Query</h2>
+                    <h2 class="query-title text-light">Submit Your Query</h2>
                 </div>
                 <div class="card-body query-card-body">
                     @if($errors->any())
@@ -122,7 +122,7 @@
     }
 
     .query-card-header {
-        background-color: #007bff;
+        background-color: #000;
         color: white;
         padding: 20px;
         border-bottom: none;
@@ -154,7 +154,7 @@
     }
 
     .form-control:focus {
-        border-color: #007bff;
+        border-color: #000;
         box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
     }
 

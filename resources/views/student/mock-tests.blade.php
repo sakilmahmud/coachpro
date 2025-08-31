@@ -66,7 +66,7 @@
 
     .card-title {
         font-size: 1.8rem;
-        color: #007bff;
+        color: #000;
         margin-bottom: 15px;
         font-weight: 600;
     }
@@ -87,7 +87,7 @@
 
     .test-time i {
         margin-right: 8px;
-        color: #007bff;
+        color: #000;
     }
 
     .view-questions-btn {
@@ -96,14 +96,14 @@
         font-size: 1.1rem;
         border-radius: 8px;
         font-weight: 600;
-        background-color: #007bff;
-        border-color: #007bff;
+        background-color: #000;
+        border-color: #000;
         transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
     .view-questions-btn:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+        background-color: #000;
+        border-color: #000;
         transform: translateY(-2px);
     }
 

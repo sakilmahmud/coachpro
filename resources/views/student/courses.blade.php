@@ -151,7 +151,7 @@
         }
         .view-details-btn {
             background-color: white;
-            color: #007bff;
+            color: #000;
             border: none;
             font-weight: 600;
             transition: background-color 0.2s ease, color 0.2s ease;

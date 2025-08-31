@@ -11,7 +11,7 @@
         <input type="hidden" name="course_id" value="{{ $course->id }}">
         <div class="form-group">
             <label for="question">Question</label>
-            <textarea class="form-control" id="question" name="question" rows="5" required>{{ $question->question }}</textarea>
+            <textarea class="form-control summernote" id="question" name="question" rows="5" required>{{ $question->question }}</textarea>
         </div>
         <div class="form-group">
             <label for="lavel">Level</label>
@@ -39,7 +39,7 @@
                 <input type="text" class="form-control" name="answers[]" placeholder="Answer {{ $i + 1 }}" required>
                 <div class="input-group-append">
                     <div class="input-group-text">
-                        <input type="radio" name="correct_answer" value="{{ $i }}" aria-label="Radio button for following text input" required> Correct
+                        <input type="radio" class="mr-3" name="correct_answer" value="{{ $i }}" aria-label="Radio button for following text input" required> &nbsp; Correct
                     </div>
                 </div>
         </div>
@@ -47,9 +47,38 @@
 </div>
 <div class="form-group">
     <label for="explanation">Explanation</label>
-    <textarea class="form-control" id="explanation" name="explanation" rows="3">{{ $question->explanation }}</textarea>
+    <textarea class="form-control summernote" id="explanation" name="explanation" rows="3">{{ $question->explanation }}</textarea>
 </div>
 <button type="submit" class="btn btn-primary mt-3">Update Question</button>
 </form>
 </div>
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('.summernote').summernote({
+            height: 300,
+            callbacks: {
+                onImageUpload: function(files) {
+                    let editor = $(this);
+                    let data = new FormData();
+                    data.append("image", files[0]);
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "{{ route('upload.editor.image') }}",
+                        type: "POST",
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            editor.summernote('insertImage', response.url);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+@endpush
 @endsection

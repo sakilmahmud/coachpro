@@ -24,9 +24,9 @@
             @foreach($questions as $question)
             <tr>
                 <td>{{ $question->id }}</td>
-                <td>{{ $question->question }}</td>
+                <td>{!! $question->question !!}</td>
                 <td>{{ $question->lavel }}</td>
-                <td>{{ $question->explanation }}</td>
+                <td>{!! $question->explanation !!}</td>
                 <td>
                     <button type="button" class="btn btn-sm btn-primary viewAnswersBtn" data-id="{{ $question->id }}" data-bs-toggle="modal" data-bs-target="#answersModal">View Answers</button>
                 </td>

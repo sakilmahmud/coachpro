@@ -28,10 +28,13 @@
         <!-- Answer options will be loaded here by JavaScript -->
     </div>
 
-    <div class="quiz-navigation">
-        <button id="prevButton" class="btn btn-secondary quiz-btn">Back</button>
-        <button id="nextButton" class="btn btn-primary quiz-btn">Next</button>
-        
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="quiz-navigation">
+                <button id="prevButton" class="btn btn-secondary quiz-btn">Back</button>
+                <button id="nextButton" class="btn btn-primary quiz-btn">Next</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -361,14 +364,14 @@ $(document).ready(function() {
     }
 
     .answer-option:hover {
-        border-color: #007bff;
+        border-color: #000;
         box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);;
         transform: translateY(-2px);
     }
 
     .answer-option.selected {
         background-color: #e7f0ff;
-        border-color: #007bff;
+        border-color: #000;
         box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
     }
 
@@ -427,22 +430,26 @@ $(document).ready(function() {
         to { opacity: 0; transform: translateY(-10px); }
     }
     .test-info-header {
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 15px; /* Reduced margin-top */
+        margin-bottom: 20px; /* Reduced margin-bottom */
     }
 
     .test-title {
-        font-size: 2.2rem;
+        font-size: 1.8rem; /* Reduced font size */
         color: #2c3e50;
-        margin-bottom: 10px;
+        margin-bottom: 0; /* Remove bottom margin */
+        margin-right: 10px; /* Reduced space between title and batch name */
         font-weight: 700;
     }
 
     .batch-name {
-        font-size: 1.3rem;
+        font-size: 1rem; /* Reduced font size */
         color: #7f8c8d;
         font-weight: 500;
+        margin-bottom: 0; /* Remove bottom margin */
     }
 </style>
 
