@@ -70,8 +70,12 @@
     .card-title {
         font-size: 1.8rem;
         color: #000;
-        margin-bottom: 15px;
+        margin-bottom: 0; /* Remove bottom margin to align better with image */
         font-weight: 600;
+        white-space: nowrap; /* Prevent title from wrapping */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Add ellipsis for long titles */
+        max-width: calc(100% - 70px); /* Adjust based on image width + margin */
     }
 
     .card-text.description {

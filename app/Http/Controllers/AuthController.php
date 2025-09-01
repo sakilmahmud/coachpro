@@ -112,6 +112,7 @@ class AuthController extends Controller
             // Ensure subject is not null before processing
             if ($subject) {
                 $enrolledBatches->push((object)[
+                    'batch_title' => $subject->subject,
                     'titel' => $subject->titel,
                     'course_id' => $subject->course_id,
                     'course' => $subject->course,

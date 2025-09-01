@@ -62,6 +62,7 @@
                     let editor = $(this);
                     let data = new FormData();
                     data.append("image", files[0]);
+                    data.append("question_id", {{ $question->id }});
                     $.ajax({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

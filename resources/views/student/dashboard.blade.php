@@ -22,7 +22,7 @@
                                         <div class="card-body d-flex align-items-center">
                                             <img src="{{ asset('uploads/courses/' . $batch->course->logo) }}" alt="{{ $batch->course->name }}" class="me-3" width="60">
                                             <div>
-                                                <h5 class="card-title">{{ $batch->titel }}</h5>
+                                                <h5 class="card-title">{{ $batch->batch_title }}</h5>
                                                 <p class="card-text">Course: {{ $batch->course->name }}</p>
                                                 <a href="{{ route('student.mock.tests', ['course_id' => $batch->course_id]) }}" class="btn btn-sm btn-outline-primary">View Mock Tests</a>
                                             </div>

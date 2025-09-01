@@ -1402,14 +1402,13 @@ class AdminController extends Controller
         ]);
 
         try {
-            $imageName = time() . '.' . $request->image->extension();
-            $path = $request->file('image')->storeAs('images', $imageName, 'public');
+            $questionId = $request->input('question_id'); // Assuming question_id is passed in the request
+            $image = $request->file('image');
+            $imageName = $questionId . '_' . time() . '.' . $image->extension();
+            $destinationPath = public_path('/uploads/questions');
+            $image->move($destinationPath, $imageName);
 
-            if (!$path) {
-                return response()->json(['success' => false, 'message' => 'Failed to save the image.']);
-            }
-
-            $url = asset('storage/' . $path);
+            $url = asset('uploads/questions/' . $imageName);
 
             return response()->json(['success' => true, 'url' => $url]);
         } catch (\Exception $e) {
