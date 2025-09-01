@@ -13,9 +13,12 @@
         <div class="row">
             @foreach($allAttempts as $attempt)
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card mock-test-card h-100">
+                    <div class="card mock-test-card h-100" style="transition: all .2s ease-in-out; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.125);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $attempt->mockTest->name ?? 'N/A' }}</h5> <!-- Use mockTest relationship -->
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="{{ asset('uploads/courses/' . $attempt->mockTest->course->logo) }}" alt="{{ $attempt->mockTest->course->name }}" class="me-3" width="60">
+                                <h5 class="card-title">{{ $attempt->mockTest->name ?? 'N/A' }}</h5> <!-- Use mockTest relationship -->
+                            </div>
                             <p class="card-text description">
                                 Attempted on: {{ $attempt->created_at->format('M d, Y H:i A') }}<br>
                                 Score: {{ $attempt->percentage }}%<br>
@@ -31,6 +34,7 @@
             @endforeach
         </div>
     @endif
+    <a href="{{ url()->previous() }}" class="btn btn-secondary mt-3">Go Back</a>
 </div>
 
 <style>

@@ -14,7 +14,10 @@
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card mock-test-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $mockTest->title }}</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="{{ asset('uploads/courses/' . $mockTest->course->logo) }}" alt="{{ $mockTest->course->name }}" class="me-3" width="60">
+                                <h5 class="card-title">{{ $mockTest->title }}</h5>
+                            </div>
                             <p class="card-text description">{{ $mockTest->description }}</p>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="test-time"><i class="fa fa-clock-o"></i> {{ $mockTest->time }} minutes</span>

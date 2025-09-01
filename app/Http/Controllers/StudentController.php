@@ -266,7 +266,7 @@ class StudentController extends Controller
                 $enrolledBatches->push((object)[
                     'titel' => $subject->titel,
                     'course_id' => $subject->course_id,
-                    'course_name' => $subject->course->name ?? 'N/A',
+                    'course' => $subject->course,
                     'mockTests' => $subject->course->mockTests ?? collect(),
                 ]);
             }
@@ -285,9 +285,9 @@ class StudentController extends Controller
         $courseIds = Subject::whereIn('id', $subjectIds)->pluck('course_id')->unique();
 
         if ($course_id) {
-            $mockTests = MockTest::where('course_id', $course_id)->whereIn('course_id', $courseIds)->get();
+            $mockTests = MockTest::with('course')->where('course_id', $course_id)->whereIn('course_id', $courseIds)->get();
         } else {
-            $mockTests = MockTest::whereIn('course_id', $courseIds)->get();
+            $mockTests = MockTest::with('course')->whereIn('course_id', $courseIds)->get();
         }
 
         return view('student.mock-tests', compact('mockTests'));
@@ -333,7 +333,7 @@ class StudentController extends Controller
     public function attemptedMockTests()
     {
         $allAttempts = Result::where('user_id', Auth::id())
-            ->with('mockTest') // Eager load the associated MockTest for each result
+            ->with('mockTest.course') // Eager load the associated MockTest for each result
             ->orderBy('created_at', 'desc') // Order by latest attempt
             ->get();
 

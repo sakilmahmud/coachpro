@@ -8,7 +8,10 @@
                 <div class="col-md-4 mb-4">
                     <div class="card course-card h-100 shadow-sm">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title text-white">{{ $course->name }}</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="{{ asset('uploads/courses/' . $course->logo) }}" alt="{{ $course->name }}" class="me-3" width="60">
+                                <h5 class="card-title text-white">{{ $course->name }}</h5>
+                            </div>
                             <p class="card-text text-white-50 flex-grow-1">{{ Str::limit($course->description, 100) }}</p>
                             <div class="d-flex justify-content-between align-items-center mt-auto">
                                 @if($enrolledBatches->pluck('course_id')->contains($course->id))
@@ -42,9 +45,12 @@
             <div class="list-group enrolled-courses-list">
                 @foreach($enrolledBatches as $batch)
                     <a href="{{ count($batch->mockTests) > 0 ? route('student.mock.tests', ['course_id' => $batch->course_id]) : '#' }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ count($batch->mockTests) > 0 ? '' : 'disabled' }}">
-                        <div>
-                            <h5 class="mb-1">{{ $batch->titel }}</h5>
-                            <small class="text-muted">Course: {{ $batch->course_name }}</small>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ asset('uploads/courses/' . $batch->course->logo) }}" alt="{{ $batch->course->name }}" class="me-3" width="60">
+                            <div>
+                                <h5 class="mb-1">{{ $batch->titel }}</h5>
+                                <small class="text-muted">Course: {{ $batch->course->name }}</small>
+                            </div>
                         </div>
                         @if(count($batch->mockTests) == 0)
                             <span class="badge bg-warning text-dark no-mock-tests-badge">No Mock Tests Available</span>

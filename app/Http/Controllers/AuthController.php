@@ -114,7 +114,7 @@ class AuthController extends Controller
                 $enrolledBatches->push((object)[
                     'titel' => $subject->titel,
                     'course_id' => $subject->course_id,
-                    'course_name' => $subject->course->name ?? 'N/A',
+                    'course' => $subject->course,
                     'mockTests' => $subject->course->mockTests ?? collect(),
                 ]);
             }

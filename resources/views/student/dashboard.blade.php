@@ -19,10 +19,13 @@
                             @foreach($enrolledBatches as $batch)
                                 <div class="col-md-6 col-lg-4 mb-3">
                                     <div class="card course-card h-100">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $batch->titel }}</h5>
-                                            <p class="card-text">Course: {{ $batch->course_name }}</p>
-                                            <a href="{{ route('student.mock.tests', ['course_id' => $batch->course_id]) }}" class="btn btn-sm btn-outline-primary">View Mock Tests</a>
+                                        <div class="card-body d-flex align-items-center">
+                                            <img src="{{ asset('uploads/courses/' . $batch->course->logo) }}" alt="{{ $batch->course->name }}" class="me-3" width="60">
+                                            <div>
+                                                <h5 class="card-title">{{ $batch->titel }}</h5>
+                                                <p class="card-text">Course: {{ $batch->course->name }}</p>
+                                                <a href="{{ route('student.mock.tests', ['course_id' => $batch->course_id]) }}" class="btn btn-sm btn-outline-primary">View Mock Tests</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
