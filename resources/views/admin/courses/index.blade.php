@@ -15,6 +15,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Logo</th>
                             <th>Name</th>
                             <th>Description</th>
                             <th width="10%">Actions</th>
@@ -25,6 +26,7 @@
                         @foreach($courses as $course)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td><img src="{{ asset('uploads/courses/' . $course->logo) }}" alt="{{ $course->name }}" width="50"></td>
                             <td>{{ $course->name }}</td>
                             <td>{{ $course->description }}</td>
                             <td>
@@ -35,7 +37,7 @@
                         @endforeach
                         @else
                         <tr>
-                            <td colspan="4">No Courses Found!</td>
+                            <td colspan="5">No Courses Found!</td>
                         </tr>
                         @endif
                     </tbody>
@@ -55,7 +57,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="addCourseForm" method="POST" action="{{ route('courses.store') }}">
+            <form id="addCourseForm" method="POST" action="{{ route('courses.store') }}" enctype="multipart/form-data">
                 <div id="addCourseError" class="alert alert-danger" style="display:none;"></div>
                 @csrf
                 <div class="modal-body">
@@ -66,6 +68,10 @@
                     <div class="form-group">
                         <label for="description">Description</label>
                         <textarea class="form-control" id="description" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="logo">Logo</label>
+                        <input type="file" class="form-control" id="logo" name="logo">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -87,7 +93,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="editCourseForm">
+            <form id="editCourseForm" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
@@ -99,6 +105,11 @@
                     <div class="form-group">
                         <label for="edit_description">Description</label>
                         <textarea class="form-control" id="edit_description" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_logo">Logo</label>
+                        <input type="file" class="form-control" id="edit_logo" name="logo">
+                        <img src="" id="current_logo" width="100" class="mt-2">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -142,17 +153,18 @@
         $('#courseTable').DataTable(); // Initialize Datatable
         $('#addCourseForm').submit(function(e) {
             e.preventDefault();
+            var formData = new FormData(this);
 
             $.ajax({
                 url: "{{ route('courses.store') }}",
                 type: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function(response) {
                     if (response.success) {
                         $('#addCourseForm')[0].reset();
                         $('#addCourseModal').modal('hide');
-                        $('#addCourseForm #name').val(''); // Explicitly clear name field
-                        $('#addCourseForm #description').val(''); // Explicitly clear description field
                         location.reload();
                     } else {
                         // Show inline error instead of alert
@@ -186,6 +198,11 @@
                     $('#edit_course_id').val(response.id);
                     $('#edit_name').val(response.name);
                     $('#edit_description').val(response.description);
+                    if(response.logo){
+                        $('#current_logo').attr('src', "{{ asset('uploads/courses/') }}/" + response.logo);
+                    } else {
+                        $('#current_logo').attr('src', '');
+                    }
                 },
                 error: function(xhr) {
                     alert('Error fetching course data: ' + xhr.responseText);
@@ -197,14 +214,17 @@
         $('#editCourseForm').submit(function(e) {
             e.preventDefault();
             var courseId = $('#edit_course_id').val();
+            var formData = new FormData(this);
 
             var updateUrl = "{{ route('courses.update', ':id') }}";
             updateUrl = updateUrl.replace(':id', courseId);
 
             $.ajax({
                 url: updateUrl,
-                type: 'PUT',
-                data: $(this).serialize(),
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function(response) {
                     if (response.success) {
                         //alert(response.message);
@@ -229,7 +249,6 @@
         // Delete Course
         $('#deleteCourseForm').submit(function(e) {
             e.preventDefault();
-            var courseId = $('#delete_course_id').val();
             var courseId = $('#delete_course_id').val();
             var deleteUrl = "{{ route('courses.destroy', ':id') }}";
             deleteUrl = deleteUrl.replace(':id', courseId);

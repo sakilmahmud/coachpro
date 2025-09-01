@@ -19,6 +19,7 @@
 				<th>Name</th>
 				<th>Email</th>
 				<th>Country</th>
+				<th>Enrolled Courses</th>
 				<th>Phone No</th>
 				<th>Alt Phone</th>
 				<th>Address</th>
@@ -36,6 +37,22 @@
 					<td><a href="{{ route('student.details', ['id' => $student->id]) }}">{{ $student->name }}</a></td>
 					<td>{{ $student->email }}</td>
 					<td>{{ $student->country }}</td>
+					                    <td>
+                        @php
+                            $courseNames = [];
+                            foreach ($student->accessSubjects as $access) {
+                                if ($access->subject && $access->subject->course) {
+                                    $courseNames[] = $access->subject->course->name;
+                                }
+                            }
+                            $courseNames = array_unique($courseNames);
+                        @endphp
+                        @if(count($courseNames) > 0)
+                            {{ implode(', ', $courseNames) }}
+                        @else
+                            N/A
+                        @endif
+                    </td>
 					<td>{{ $student->phone_no }}</td>
 					<td>{{ $student->altphone_no }}</td>
 					<td>{{ $student->address }}</td>

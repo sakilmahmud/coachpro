@@ -31,7 +31,7 @@ class User extends Authenticatable
     ];
     public function accessSubjects()
     {
-        return $this->hasMany(Access::class, 'id');
+        return $this->hasMany(Access::class, 'student_id');
     }
     /**
      * The attributes that should be hidden for arrays.

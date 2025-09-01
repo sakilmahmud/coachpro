@@ -18,9 +18,19 @@ class CourseController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        Course::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $logoName = time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('uploads/courses'), $logoName);
+            $data['logo'] = $logoName;
+        }
+
+        Course::create($data);
 
         return response()->json(['success' => true, 'message' => 'Course added successfully!']);
     }
@@ -36,10 +46,28 @@ class CourseController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $course = Course::find($id);
-        $course->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $logoName = time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('uploads/courses'), $logoName);
+            $data['logo'] = $logoName;
+
+            // Delete old logo if it exists
+            if ($course->logo) {
+                $oldLogoPath = public_path('uploads/courses/' . $course->logo);
+                if (file_exists($oldLogoPath)) {
+                    unlink($oldLogoPath);
+                }
+            }
+        }
+
+        $course->update($data);
 
         return response()->json(['success' => true, 'message' => 'Course updated successfully!']);
     }
