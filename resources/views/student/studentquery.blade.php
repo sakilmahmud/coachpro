@@ -19,16 +19,16 @@
                         </div>
                     @endif
 
-                    <form id="savequery">
+                    @if(session('success'))    <div class="alert alert-success" role="alert">        {{ session('success') }}    </div>@endif                    <form id="savequery" action="{{ route('studentQuery') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group mb-3">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}" readonly>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}" readonly>
                         </div>
 
@@ -38,13 +38,18 @@
                         </div>
 
                         <div class="form-group mb-4">
-                            <label for="number" class="form-label">Phone No</label>
-                            <input type="text" class="form-control" id="number" name="number" value="{{ Auth::user()->phone_no }}" readonly>
+                            <label for="number" class="form-label">Phone No <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="number" name="number" value="{{ Auth::user()->phone_no }}" >
                         </div>
 
                         <div class="form-group mb-4">
-                            <label for="query" class="form-label">Your Query</label>
+                            <label for="query" class="form-label">Your Query <span class="text-danger">*</span></label>
                             <textarea name="query" id="query" class="form-control query-textarea" rows="5" placeholder="Enter Your Query"></textarea>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="attachment" class="form-label">Attachment (PDF, Images)</label>
+                            <input type="file" class="form-control" id="attachment" name="attachment">
                         </div>
 
                         <div class="d-grid">
@@ -76,33 +81,7 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
-        $('#savequery').submit(function (e) {
-            e.preventDefault();
 
-            var formData = $(this).serialize();
-
-            $.ajax({
-                url: "{{ route('studentQuery') }}",
-                type: "POST",
-                data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                        successModal.show();
-                        $('#savequery')[0].reset(); // Reset the form
-                    } else {
-                        alert('Data not saved. Please try again.');
-                    }
-                },
-                error: function () {
-                    alert('An error occurred. Please try again later.');
-                }
-            });
-        });
-    });
-</script>
 
 <style>
     body {

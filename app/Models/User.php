@@ -26,8 +26,7 @@ class User extends Authenticatable
         'address',
         'address_2',
         'city',
-        'state',
-        'image'
+        'state'
     ];
     public function accessSubjects()
     {

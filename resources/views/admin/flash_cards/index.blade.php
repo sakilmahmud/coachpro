@@ -15,7 +15,7 @@
                     <th>ID</th>
                     <th>Question</th>
                     <th>Answer</th>
-                    <th>Actions</th>
+                    <th width="15%">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,7 +29,7 @@
                             <form action="{{ route('flash-cards.destroy', $flashQuestion->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure?')">Delete</button>
                             </form>
                         </td>
                     </tr>

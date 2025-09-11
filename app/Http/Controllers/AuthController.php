@@ -41,6 +41,7 @@ class AuthController extends Controller
             'email' => 'string|email|required|max:100|unique:users',
             'password' => 'string|required|min:6',
             'phone_no' => 'string|required',
+            'altphone_no' => 'nullable|string|max:20',
             'country' => 'string|required',
             'address' => 'string|required',
             'city' => 'string|required',
@@ -151,7 +152,6 @@ class AuthController extends Controller
             'address' => 'string|required',
             'city' => 'string|required',
             'state' => 'string|required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $user = Auth::user();
@@ -163,12 +163,6 @@ class AuthController extends Controller
         $user->address_2 = $request->address_2;
         $user->city = $request->city;
         $user->state = $request->state;
-
-        if ($request->hasFile('image')) {
-            $imageName = time().'.'.$request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
-            $user->image = $imageName;
-        }
 
         $user->save();
 

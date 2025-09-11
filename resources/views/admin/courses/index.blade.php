@@ -15,10 +15,10 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Logo</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th width="10%">Actions</th>
+                            <th>Course Logo</th>
+                            <th>Course Name</th>
+                            <th>Course Description</th>
+                            <th width="20%">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

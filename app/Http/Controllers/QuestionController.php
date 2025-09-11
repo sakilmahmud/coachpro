@@ -43,25 +43,65 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validationRules = [
             'question' => 'required|string',
             'lavel' => 'nullable|string',
             'explanation' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'mock_test_id' => 'required|exists:mock_tests,id',
-            'answers' => 'required|array|min:4|max:4',
-            'answers.*' => 'required|string',
-            'correct_answer' => 'required|numeric|min:0|max:3',
+            'question_type' => 'required|in:MCQ,True/False,Multiple Answer',
+        ];
+
+        if ($request->question_type === 'MCQ') {
+            $validationRules['mcq_answers'] = 'required|array|min:4|max:4';
+            $validationRules['mcq_answers.*'] = 'required|string';
+            $validationRules['mcq_correct_answer'] = 'required|numeric|min:0|max:3';
+        } elseif ($request->question_type === 'True/False') {
+            $validationRules['tf_answers'] = 'required|array|min:2|max:2';
+            $validationRules['tf_answers.*'] = 'required|string';
+            $validationRules['tf_correct_answer'] = 'required|numeric|in:0,1';
+        } elseif ($request->question_type === 'Multiple Answer') {
+            $validationRules['ma_answers'] = 'required|array|min:4|max:4';
+            $validationRules['ma_answers.*'] = 'required|string';
+            $validationRules['ma_correct_answers'] = 'required|array|min:1';
+            $validationRules['ma_correct_answers.*'] = 'required|numeric';
+        }
+
+        $request->validate($validationRules);
+
+        $question = Question::create([
+            'question' => $request->question,
+            'lavel' => $request->lavel,
+            'explanation' => $request->explanation,
+            'course_id' => $request->course_id,
+            'mock_test_id' => $request->mock_test_id,
+            'question_type' => $request->question_type,
         ]);
 
-        $question = Question::create($request->all());
-
-        foreach ($request->answers as $index => $answerText) {
-            Answer::create([
-                'questions_id' => $question->id,
-                'answer' => $answerText,
-                'is_correct' => ($index == $request->correct_answer) ? 1 : 0,
-            ]);
+        if ($request->question_type === 'MCQ') {
+            foreach ($request->mcq_answers as $index => $answerText) {
+                Answer::create([
+                    'questions_id' => $question->id,
+                    'answer' => $answerText,
+                    'is_correct' => ($index == $request->mcq_correct_answer) ? 1 : 0,
+                ]);
+            }
+        } elseif ($request->question_type === 'True/False') {
+            foreach ($request->tf_answers as $index => $answerText) {
+                Answer::create([
+                    'questions_id' => $question->id,
+                    'answer' => $answerText,
+                    'is_correct' => ($index == $request->tf_correct_answer) ? 1 : 0,
+                ]);
+            }
+        } elseif ($request->question_type === 'Multiple Answer') {
+            foreach ($request->ma_answers as $index => $answerText) {
+                Answer::create([
+                    'questions_id' => $question->id,
+                    'answer' => $answerText,
+                    'is_correct' => in_array($index, $request->ma_correct_answers) ? 1 : 0,
+                ]);
+            }
         }
 
         return redirect()->route('questions.index', ['mock_test_id' => $request->mock_test_id])->with('success', 'Question created successfully.');
@@ -75,7 +115,8 @@ class QuestionController extends Controller
      */
     public function show($id)
     {
-        //
+        $question = \App\Models\Question::with('answers')->findOrFail($id);
+        return view('admin.questions.show', compact('question'));
     }
 
     /**
@@ -86,7 +127,7 @@ class QuestionController extends Controller
      */
     public function edit($id)
     {
-        $question = \App\Models\Question::findOrFail($id);
+        $question = \App\Models\Question::with('answers')->findOrFail($id);
         $mockTest = \App\Models\MockTest::findOrFail($question->mock_test_id);
         $course = \App\Models\Course::findOrFail($question->course_id);
         return view('admin.questions.edit', compact('question', 'mockTest', 'course'));
@@ -101,30 +142,70 @@ class QuestionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validationRules = [
             'question' => 'required|string',
             'lavel' => 'nullable|string',
             'explanation' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'mock_test_id' => 'required|exists:mock_tests,id',
-            'answers' => 'required|array|min:4|max:4',
-            'answers.*' => 'required|string',
-            'correct_answer' => 'required|numeric|min:0|max:3',
-        ]);
+            'question_type' => 'required|in:MCQ,True/False,Multiple Answer',
+        ];
+
+        if ($request->question_type === 'MCQ') {
+            $validationRules['mcq_answers'] = 'required|array|min:4|max:4';
+            $validationRules['mcq_answers.*'] = 'required|string';
+            $validationRules['mcq_correct_answer'] = 'required|numeric|min:0|max:3';
+        } elseif ($request->question_type === 'True/False') {
+            $validationRules['tf_answers'] = 'required|array|min:2|max:2';
+            $validationRules['tf_answers.*'] = 'required|string';
+            $validationRules['tf_correct_answer'] = 'required|numeric|in:0,1';
+        } elseif ($request->question_type === 'Multiple Answer') {
+            $validationRules['ma_answers'] = 'required|array|min:4|max:4';
+            $validationRules['ma_answers.*'] = 'required|string';
+            $validationRules['ma_correct_answers'] = 'required|array|min:1';
+            $validationRules['ma_correct_answers.*'] = 'required|numeric';
+        }
+
+        $request->validate($validationRules);
 
         $question = Question::findOrFail($id);
-        $question->update($request->all());
+        $question->update([
+            'question' => $request->question,
+            'lavel' => $request->lavel,
+            'explanation' => $request->explanation,
+            'course_id' => $request->course_id,
+            'mock_test_id' => $request->mock_test_id,
+            'question_type' => $request->question_type,
+        ]);
 
         // Delete existing answers
         $question->answers()->delete();
 
-        // Create new answers
-        foreach ($request->answers as $index => $answerText) {
-            Answer::create([
-                'questions_id' => $question->id,
-                'answer' => $answerText,
-                'is_correct' => ($index == $request->correct_answer) ? 1 : 0,
-            ]);
+        // Create new answers based on question type
+        if ($request->question_type === 'MCQ') {
+            foreach ($request->mcq_answers as $index => $answerText) {
+                Answer::create([
+                    'questions_id' => $question->id,
+                    'answer' => $answerText,
+                    'is_correct' => ($index == $request->mcq_correct_answer) ? 1 : 0,
+                ]);
+            }
+        } elseif ($request->question_type === 'True/False') {
+            foreach ($request->tf_answers as $index => $answerText) {
+                Answer::create([
+                    'questions_id' => $question->id,
+                    'answer' => $answerText,
+                    'is_correct' => ($index == $request->tf_correct_answer) ? 1 : 0,
+                ]);
+            }
+        } elseif ($request->question_type === 'Multiple Answer') {
+            foreach ($request->ma_answers as $index => $answerText) {
+                Answer::create([
+                    'questions_id' => $question->id,
+                    'answer' => $answerText,
+                    'is_correct' => in_array($index, $request->ma_correct_answers) ? 1 : 0,
+                ]);
+            }
         }
 
         return redirect()->route('questions.index', ['mock_test_id' => $question->mock_test_id])->with('success', 'Question updated successfully.');

@@ -28,6 +28,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -79,29 +81,43 @@ class AdminController extends Controller
 
     public function uploadPdf(Request $request)
     {
-        $request->validate([
+        /* $request->validate([
             'topic' => 'required|string|max:255',
             'pdf' => 'required|file|mimes:pdf',
             'batch_id' => 'required|integer|exists:subjects,id'
-        ]);
+        ]); */
 
         try {
-            $originalFileName = $request->file('pdf')->getClientOriginalName();
-            $path = $request->file('pdf')->storeAs('pdfs', $originalFileName, 'public');
+            Log::info('PDF upload process started.');
 
-            if (!$path) {
-                return back()->with('error', 'Failed to save the PDF.');
+            $originalFileName = $request->file('pdf')->getClientOriginalName();
+            $batchId = $request->batch_id;
+            $path = "uploads/batch/{$batchId}";
+            $destinationPath = public_path($path);
+
+            Log::info('Destination path: ' . $destinationPath);
+
+            if (!File::exists($destinationPath)) {
+                Log::info('Directory does not exist, attempting to create it.');
+                File::makeDirectory($destinationPath, 0755, true, true);
             }
 
+            Log::info('Moving file to destination.');
+            $request->file('pdf')->move($destinationPath, $originalFileName);
+            $fullPath = "{$path}/{$originalFileName}";
+
+            Log::info('File moved, creating database record.');
             Pdf::create([
-                'subject_id' => $request->batch_id,
+                'subject_id' => $batchId,
                 'topic' => $request->topic,
-                'pdf' => $path,
+                'pdf' => $fullPath,
             ]);
 
-            return back()->with('success', 'PDF uploaded successfully!');
+            Log::info('PDF upload process finished successfully.');
+            return redirect()->route('batchDetail', ['id' => $batchId])->with('success', 'PDF uploaded successfully!');
         } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            Log::error('An error occurred during PDF upload: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
 
@@ -221,8 +237,6 @@ class AdminController extends Controller
 
 
     public function addpdf(Request $request)
-
-
     {
         $request->validate([
             'pdf' => 'required|file|mimes:pdf', // PDF file validation rule
@@ -231,9 +245,9 @@ class AdminController extends Controller
         // Retrieve the original file name
         $originalFileName = $request->file('pdf')->getClientOriginalName();
 
-        // Save the PDF to a storage disk (e.g., 'public' disk)
-        $path = $request->file('pdf')->storeAs('pdfs', $originalFileName, 'public');
-        dd($path, Storage::disk('public')->exists($path));
+        // Save the PDF to the public directory
+        $path = $request->file('pdf')->move(public_path('pdfs'), $originalFileName);
+
         if (!$path) {
             return response()->json(['success' => false, 'msg' => 'Failed to save the PDF.']);
         }
@@ -242,7 +256,7 @@ class AdminController extends Controller
         Pdf::insert([
             'subject_id' => $request->subject_id,
             'topic' => $request->topic,
-            'pdf' => $path,
+            'pdf' => 'pdfs/' . $originalFileName,
         ]);
 
         $subjects = Subject::all();
@@ -906,7 +920,7 @@ class AdminController extends Controller
     //student dashboard
     public function studentsDashboard()
     {
-        $students = User::where('is_admin', 0)->get();
+        $students = User::where('is_admin', 0)->orderBy('created_at', 'desc')->get();
         return view('admin.studentsDashboard', compact('students'));
     }
 
@@ -915,34 +929,67 @@ class AdminController extends Controller
     public function addStudent(Request $request)
     {
         try {
-
-            $password = Str::random(8);
-
-            User::insert([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone_no' => $request->phone,
-                'country' => $request->country,
-                'altphone_no' => $request->uphone,
-                'address' => $request->addtess,
-                'image' => $request->image,
-                'password' => Hash::make($password)
+            // ✅ Validate request
+            $request->validate([
+                'name'        => 'required|string|max:255',
+                'email'       => 'required|email|unique:users,email',
+                'address'     => 'required|string|max:255',
+                'address_2'   => 'nullable|string|max:255',
+                'city'        => 'required|string|max:255',
+                'state'       => 'required|string|max:255',
+                'country'     => 'required|string|max:255',
+                'phone_no'    => 'required|string|max:20',
+                'altphone_no' => 'nullable|string|max:20',
             ]);
 
-            $url = URL::to('/');
+            // ✅ Generate random password
+            $password = Str::random(8);
 
-            $data['url'] = $url;
-            $data['name'] = $request->name;
-            $data['email'] = $request->email;
-            $data['password'] = $password;
-            $data['title'] = "Student Registration on OES";
+            // ✅ Create user
+            $user = User::create([
+                'name'        => $request->name,
+                'email'       => $request->email,
+                'address'     => $request->address,
+                'address_2'   => $request->address_2,
+                'city'        => $request->city,
+                'state'       => $request->state,
+                'country'     => $request->country,
+                'phone_no'    => $request->phone_no,
+                'altphone_no' => $request->altphone_no,
+                'password'    => Hash::make($password),
+            ]);
 
+            $data = [
+                'url'      => url('/'), // simpler helper
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => $password,
+                'title'    => "Student Registration on OES",
+            ];
+
+            // ✅ Send mail
             Mail::send('registrationMail', ['data' => $data], function ($message) use ($data) {
                 $message->to($data['email'])->subject($data['title']);
             });
-            return response()->json(['success' => true, 'msg' => 'Student added Successfully!']);
+
+            return response()->json([
+                'success' => true,
+                'msg'     => 'Student added Successfully!',
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // ✅ Validation errors
+            return response()->json([
+                'success' => false,
+                'msg'     => 'The given data was invalid.',
+                'errors'  => $e->errors(),
+            ], 422);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'msg' => $e->getMessage()]);
+            // ✅ Any other error
+            return response()->json([
+                'success' => false,
+                'msg'     => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -951,15 +998,29 @@ class AdminController extends Controller
     {
         try {
 
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,'.$request->id,
+                'address' => 'required|string|max:255',
+                'address_2' => 'nullable|string|max:255',
+                'city' => 'required|string|max:255',
+                'state' => 'required|string|max:255',
+                'country' => 'required|string|max:255',
+                'phone_no' => 'required|string|max:20',
+                'altphone_no' => 'nullable|string|max:20',
+            ]);
+
             $user = User::find($request->id);
 
             $user->name = $request->name;
             $user->email = $request->email;
-            $user->phone_no = $request->phone;
-            $user->country = $request->country;
-            $user->altphone_no = $request->uphone;
             $user->address = $request->address;
-            $user->image = $request->image;
+            $user->address_2 = $request->address_2;
+            $user->city = $request->city;
+            $user->state = $request->state;
+            $user->country = $request->country;
+            $user->phone_no = $request->phone_no;
+            $user->altphone_no = $request->altphone_no;
 
             $user->save();
 
@@ -1103,13 +1164,13 @@ class AdminController extends Controller
     //   Student Result see admin
     public function Studentdetails($id)
     {
-        $student = User::where('id', $id)->value('name');
+        $student = User::with(['accessSubjects.subject.course'])->find($id);
 
-        $result = Result::where('user_id', $id)->get();
+        if (!$student) {
+            abort(404); // Or redirect with an error message
+        }
 
-
-        // dd($result);
-        return view('admin.viewstudentresult', ['students' => $student], ['results' => $result]);
+        return view('admin.studentdetails', compact('student'));
     }
 
     ////See Question
@@ -1331,11 +1392,10 @@ class AdminController extends Controller
     public function deleteqery(Request $request)
     {
         try {
-
             StudentQuery::where('id', $request->id)->delete();
-            return response()->json(['success' => true, 'msg' => 'Subject deleted Successfully!']);
+            return redirect()->back()->with('success', 'Query deleted successfully!');
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'msg' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Error deleting query: ' . $e->getMessage());
         };
     }
 
@@ -1413,6 +1473,19 @@ class AdminController extends Controller
             return response()->json(['success' => true, 'url' => $url]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function unenrollStudent(Request $request)
+    {
+        try {
+            Access::where('subject_id', $request->batch_id)
+                ->where('student_id', $request->student_id)
+                ->delete();
+
+            return redirect()->back()->with('success', 'Student unenrolled successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

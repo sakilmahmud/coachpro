@@ -52,7 +52,8 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ route('student.mock.tests.attempted') }}" class="btn btn-primary">View All Past Results</a>
+            <a href="{{ route('student.mock.tests.attempted') }}" class="btn btn-primary me-2">View All Past Results</a>
+            <a href="{{ route('student.mock.test.result.details', $mockTest->id) }}" class="btn btn-info">View Details</a>
         </div>
     @endif
 </div>

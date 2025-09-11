@@ -16,7 +16,7 @@
                 <th>Name</th>
                 <th>Time</th>
                 <th>Description</th>
-                <th>Actions</th>
+                <th width="30%">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@
                     <form action="{{ route('mock-tests.destroy', $mockTest->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                        <button type="submit" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
                     <a href="{{ route('questions.index', ['mock_test_id' => $mockTest->id]) }}" class="btn btn-sm btn-primary">View Questions</a>
                 </td>

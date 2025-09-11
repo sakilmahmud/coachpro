@@ -5,7 +5,7 @@
     <section class="content-header">
         <div class="container-fluid d-flex justify-content-between align-items-center my-2">
             <h2>Batches</h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModel">Add Batches</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModel">Add Batch</button>
         </div>
     </section>
     <section class="content">
@@ -17,10 +17,10 @@
                             <th scope="col">#</th>
                             <th scope="col">Batch Name</th>
                             <th scope="col">Course</th>
-                            <th scope="col">Duration</th>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col" width="15%">Action</th>
+                            <th scope="col" width="10%">Duration</th>
+                            <th scope="col" width="15%">Start Date</th>
+                            <th scope="col" width="15%">End Date</th>
+                            <th scope="col" width="20%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,7 +39,7 @@
                             <td>
                                 <a href="{{ route('batchDetail', ['id' => $subject->id]) }}" class="btn btn-sm btn-primary">View</a>
                                 <button class="btn btn-sm btn-info editButton" data-id="{{$subject->id}}" data-subject="{{ $subject->subject }}" data-course_id="{{ $subject->course_id }}" data-duration="{{ $subject->duration }}" data-startdate="{{ $subject->starting_date }}" data-enddate="{{ $subject->end_date }}" data-explanation="{{ $subject->explnation }}" data-bs-toggle="modal" data-bs-target="#editSubjectModel">Edit</button>
-                                <button class="btn btn-sm btn-danger deleteButton" data-id="{{ $subject->id }}" data-bs-toggle="modal" data-bs-target="#deleteSubjectModel">Delete</button>
+                                <button class="btn btn-sm btn-dark deleteButton" data-id="{{ $subject->id }}" data-bs-toggle="modal" data-bs-target="#deleteSubjectModel">Delete</button>
                             </td>
                         </tr>
                         @endforeach

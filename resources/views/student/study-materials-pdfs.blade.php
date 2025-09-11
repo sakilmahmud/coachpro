@@ -23,7 +23,7 @@
                                 <div class="d-flex justify-content-center align-items-center mt-auto">
                                 <button type="button" class="btn btn-sm btn-outline-light view-pdf-btn"
                                         data-bs-toggle="modal" data-bs-target="#pdfViewerModal"
-                                        data-pdf-url="{{ asset('pdfs/' . $pdf->file) }}">
+                                        data-pdf-url="{{ asset($pdf->pdf) }}">
                                     View PDF
                                 </button>
                             </div>
@@ -56,9 +56,11 @@ $(document).ready(function() {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var pdfUrl = button.data('pdf-url'); // Extract info from data-* attributes
 
+        console.log(pdfUrl);
+
         var modal = $(this);
         // Using Google Docs Viewer for better cross-browser compatibility and features
-        modal.find('#pdfViewerFrame').attr('src', 'https://docs.google.com/gview?url=' + encodeURIComponent(pdfUrl) + '&embedded=true');
+        modal.find('#pdfViewerFrame').attr('src', pdfUrl);
     });
 
     // Clear iframe src when modal is hidden to stop PDF loading in background

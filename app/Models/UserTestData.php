@@ -12,15 +12,17 @@ class UserTestData extends Model
     protected $fillable = [
         'user_id',
         'question_id',
-        'question_name',
-        'selected_option',
+        'selected_answer_ids',
+        'correct_answer_ids',
         'is_correct',
-        'attempt_id'
+        'mock_test_id',
+        'result_id'
         
     ];
+
     public function question()
-{
-    return $this->belongsTo(Question::class);
-}
+    {
+        return $this->belongsTo(Question::class);
+    }
 
 }

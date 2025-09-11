@@ -304,24 +304,37 @@ private function getCurrentAttempt($userId, $title, $subject)
 
     public function studentQuery(Request $request)
 {
-    // $request->validate([
-    //     'name' => 'required|string|max:255',
-    //     'email' => 'required|email', // Customize validation as needed
-    //     'country' => 'required|string|max:255', // Add country validation as needed
-    //     'number' => 'required|string|max:15',
-    //     'query' => 'required|string',
-    // ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'number' => 'required|string|max:15',
+        'query' => 'required|string',
+        'attachment' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
     $data = new StudentQuery();
     $data->student_name = $request['name'];
     $data->student_mail = $request['email'];
-    $data->contry = $request['country']; // Use the correct field name
+    $data->contry = $request['country'];
     $data->student_number = $request['number'];
     $data->student_querys = $request['query'];
+
+    if ($request->hasFile('attachment')) {
+        $file = $request->file('attachment');
+        $fileName = time().'.'.$file->getClientOriginalExtension();
+        $destinationPath = public_path('uploads/student_queries');
+
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+
+        $file->move($destinationPath, $fileName);
+        $data->attachment = $fileName;
+    }
+
     $data->save();
 
-    // You can add a success message if needed
-    return response()->json(['success' => true]);
+    return redirect()->back()->with('success', 'Your query has been submitted successfully!');
 }
 
             public function loadNextSection()

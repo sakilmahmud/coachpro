@@ -28,7 +28,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title h3">{{ $courseCount }}</h5>
                         <p class="card-text">Number of Courses</p>
-                        <a href="{{ route('courses.index') }}" class="btn btn-light">More info</a> {{-- Link to courses index --}}
+                        <a href="{{ route('courses.index') }}" class="btn btn-light">More Info</a> {{-- Link to courses index --}}
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title h3">{{ $batchCount }}</h5>
                         <p class="card-text">Number of Batches</p>
-                        <a href="{{ route('batches') }}" class="btn btn-light">More info</a> {{-- Link to batches index --}}
+                        <a href="{{ route('batches') }}" class="btn btn-light">More Info</a> {{-- Link to batches index --}}
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title h3">{{ $studentCount }}</h5>
                         <p class="card-text">Number of Students</p>
-                        <a href="{{ route('admin.studentsDashboard') }}" class="btn btn-light">More info</a>
+                        <a href="{{ route('admin.studentsDashboard') }}" class="btn btn-light">More Info</a>
                     </div>
                 </div>
             </div>

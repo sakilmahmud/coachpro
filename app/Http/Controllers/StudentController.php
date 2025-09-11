@@ -14,6 +14,7 @@ use App\Models\Question;
 use App\Models\Result;
 use App\Models\Access;
 use App\Models\Subject;
+use App\Models\UserTestData; // Add this line
 use Illuminate\Support\Facades\Auth;
 
 use Razorpay\Api\Api;
@@ -197,32 +198,96 @@ class StudentController extends Controller
     {
         $request->validate([
             'mock_test_id' => 'required|exists:mock_tests,id',
-            'correct_count' => 'required|integer',
-            'incorrect_count' => 'required|integer',
-            'unattempted_count' => 'required|integer',
-            'percentage' => 'required|numeric',
+            'user_question_answers' => 'required|array', // Array of {question_id, selected_answer_ids}
+            'user_question_answers.*.question_id' => 'required|exists:questions,id',
+            'user_question_answers.*.selected_answer_ids' => 'nullable|array',
         ]);
 
-        $mockTest = MockTest::find($request->mock_test_id);
+        $user = Auth::user();
+        $mockTestId = $request->mock_test_id;
+        $userQuestionAnswers = $request->user_question_answers;
+
+        /* echo "<pre>";
+        print_r($userQuestionAnswers); die; */
+
+        $mockTest = MockTest::find($mockTestId);
         if (!$mockTest) {
             return response()->json(['success' => false, 'message' => 'Mock test not found.'], 404);
         }
 
-        Result::create([
-            'user_id' => Auth::id(),
-            'course_id' => $mockTest->course_id, // Assuming mock_tests table has course_id
-            'mock_test_id' => $request->mock_test_id,
-            'percentage' => $request->percentage,
-            'correct_count' => $request->correct_count,
-            'incorrect_count' => $request->incorrect_count,
-            'unattempted_count' => $request->unattempted_count,
+        // Create Result entry first to get result_id
+        $result = Result::create([
+            'user_id' => $user->id,
+            'course_id' => $mockTest->course_id,
+            'mock_test_id' => $mockTestId,
+            'percentage' => 0, // Temporary, will update later
+            'correct_count' => 0, // Temporary, will update later
+            'incorrect_count' => 0, // Temporary, will update later
+            'unattempted_count' => 0, // Temporary, will update later
         ]);
 
-        // Redirect to a results page or return success
+        $correctCount = 0;
+        $incorrectCount = 0;
+        $totalQuestions = $mockTest->questions()->count(); // Get total questions in the mock test
+        $attemptedQuestions = []; // To keep track of questions answered by user
+
+        foreach ($userQuestionAnswers as $answerData) {
+            $questionId = $answerData['question_id'];
+            $selectedAnswerIds = $answerData['selected_answer_ids'];
+
+            $question = Question::with('answers')->find($questionId);
+            if (!$question) {
+                continue; // Skip if question not found
+            }
+
+            $attemptedQuestions[] = $questionId; // Mark as attempted
+
+            $correctAnswerIds = $question->answers->where('is_correct', 1)->pluck('id')->toArray();
+
+            // Determine if the selected answer(s) are correct
+            $isCorrect = false;
+            if ($question->question_type === 'Multiple Answer') {
+                // For multiple choice, all selected must be correct and no extra incorrect ones
+                $isCorrect = (count($selectedAnswerIds) === count($correctAnswerIds)) &&
+                             (empty(array_diff($selectedAnswerIds, $correctAnswerIds)) && empty(array_diff($correctAnswerIds, $selectedAnswerIds)));
+            } else {
+                // For single choice, check if the single selected answer is correct
+                $isCorrect = in_array($selectedAnswerIds[0] ?? null, $correctAnswerIds);
+            }
+
+            // Save to user_test_data
+            UserTestData::create([
+                'user_id' => $user->id,
+                'mock_test_id' => $mockTestId,
+                'question_id' => $questionId,
+                'result_id' => $result->id, // Link to the newly created result
+                'selected_answer_ids' => json_encode($selectedAnswerIds),
+                'correct_answer_ids' => json_encode($correctAnswerIds),
+                'is_correct' => $isCorrect ? 1 : 0
+            ]);
+
+            if ($isCorrect) {
+                $correctCount++;
+            } else {
+                $incorrectCount++;
+            }
+        }
+
+        $unattemptedCount = $totalQuestions - count($attemptedQuestions);
+        $percentage = ($totalQuestions > 0) ? (($correctCount / $totalQuestions) * 100) : 0;
+
+        // Update the Result entry with final calculated counts and percentage
+        $result->update([
+            'percentage' => round($percentage, 2),
+            'correct_count' => $correctCount,
+            'incorrect_count' => $incorrectCount,
+            'unattempted_count' => $unattemptedCount,
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Results saved successfully!',
-            'redirect_url' => route('student.mock.test.result', $request->mock_test_id) // Assuming you have a route for displaying results
+            'redirect_url' => route('student.mock.test.result', $mockTestId)
         ]);
     }
 
@@ -310,6 +375,7 @@ class StudentController extends Controller
                 'id' => $question->id,
                 'question' => $question->question,
                 'image' => $question->image,
+                'question_type' => $question->question_type,
             ];
 
             $questionAnswers = [];
@@ -402,4 +468,31 @@ class StudentController extends Controller
 
         return back()->with('success', 'Password successfully changed!');
     }
+
+    public function mockTestResultDetails($mock_test_id)
+    {
+        $mockTest = MockTest::with('questions.answers')->find($mock_test_id);
+
+        if (!$mockTest) {
+            abort(404, 'Mock Test not found.');
+        }
+
+        $latestResult = Result::where('user_id', Auth::id())
+            ->where('mock_test_id', $mock_test_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $userAnswers = collect();
+        if ($latestResult) {
+            $userAnswers = UserTestData::where('user_id', Auth::id())
+                ->where('mock_test_id', $mock_test_id)
+                ->where('result_id', $latestResult->id)
+                ->get()
+                ->keyBy('question_id');
+        }
+
+        return view('student.mock-test-result-details', compact('mockTest', 'userAnswers', 'latestResult'));
+    }
+
+    
 }

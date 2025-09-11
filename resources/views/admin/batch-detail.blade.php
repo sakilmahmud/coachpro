@@ -1,6 +1,12 @@
 @extends('layout/admin-layout')
 
 @section('space-work')
+<style>
+    .btn-theme-secondary:hover {
+        background-color: orange !important;
+        color: white !important;
+    }
+</style>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -86,7 +92,12 @@
                                     <td>{{ $student->country }}</td>
                                     <td>{{ $student->address }}</td>
                                     <td>
-                                        <button class="btn btn-theme-secondary btn-sm">Remove</button>
+                                        <form action="{{ route('unenrollStudent') }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            <input type="hidden" name="batch_id" value="{{ $batch->id }}">
+                                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+                                            <button type="submit" class="btn btn-theme-secondary btn-sm" onclick="return confirm('Are you sure you want to remove this student?')">Remove</button>
+                                        </form>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -115,7 +126,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $pdf->topic }}</td>
-                                    <td><a href="{{ asset('storage/'.$pdf->pdf) }}" target="_blank">View PDF</a></td>
+                                    <td><a href="{{ asset($pdf->pdf) }}" target="_blank">View PDF</a></td>
                                     <td>
                                         <form action="{{ route('deletePdf') }}" method="POST">
                                             @csrf
@@ -296,6 +307,26 @@
     $(document).ready(function() {
         $('#enrolledStudentsTable').DataTable({"ordering": false});
         $('#unenrolledStudentsTable').DataTable({"ordering": false});
+
+        // Check if there is a success message in the session
+        @if(session('success'))
+            // If there is a success message, activate the PDFs tab
+            $('.nav-pills a[href="#pdfs"]').tab('show');
+        @endif
+
+        // Check file size before uploading
+        $('#pdf').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const fileSize = file.size; // in bytes
+                const maxSize = 2 * 1024 * 1024; // 2MB
+
+                if (fileSize > maxSize) {
+                    alert('The selected file is too large. Please select a file smaller than 2MB.');
+                    $(this).val(''); // Clear the file input
+                }
+            }
+        });
     });
 </script>
 @endpush

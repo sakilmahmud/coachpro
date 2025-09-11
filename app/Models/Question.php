@@ -14,7 +14,8 @@ class Question extends Model
         'question',
         'explaination',
         'course_id',
-        'mock_test_id'
+        'mock_test_id',
+        'question_type'
     ];
 
     public function course()

@@ -50,10 +50,12 @@ Route::group(['middleware' => ['web', 'checkAdmin']], function () {
     Route::resource('admin/courses', CourseController::class);
     Route::resource('admin/mock-tests', MockTestController::class);
     Route::resource('admin/questions', QuestionController::class);
+    Route::get('admin/questions/show/{id}', [QuestionController::class, 'show'])->name('questions.show');
     Route::get('/admin/questions/{question}/answers', [QuestionController::class, 'getAnswers']);
     Route::get('/admin/batches', [AdminController::class, 'batches'])->name('batches');
     Route::get('/admin/batch/{id}', [AdminController::class, 'batchDetail'])->name('batchDetail');
     Route::post('/admin/enroll-student', [AdminController::class, 'enrollStudent'])->name('enrollStudent');
+    Route::post('/admin/unenroll-student', [AdminController::class, 'unenrollStudent'])->name('unenrollStudent');
     Route::post('/admin/upload-pdf', [AdminController::class, 'uploadPdf'])->name('uploadPdf');
     Route::post('/admin/upload-video', [AdminController::class, 'uploadVideo'])->name('uploadVideo');
     Route::post('/admin/delete-pdf', [AdminController::class, 'deletePdf'])->name('deletePdf');
@@ -201,4 +203,5 @@ Route::group(['middleware' => ['checkStudent']], function () {
     Route::post('/student/profile', [App\Http\Controllers\StudentController::class, 'updateProfile'])->name('student.profile.update');
     Route::get('/student/change-password', [App\Http\Controllers\StudentController::class, 'changePassword'])->name('student.change-password');
     Route::post('/student/change-password', [App\Http\Controllers\StudentController::class, 'updatePassword'])->name('student.update-password');
+    Route::get('/student/mock-test/result/{id}/details', [App\Http\Controllers\StudentController::class, 'mockTestResultDetails'])->name('student.mock.test.result.details');
 });

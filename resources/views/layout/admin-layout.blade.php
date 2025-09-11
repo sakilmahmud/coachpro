@@ -27,7 +27,7 @@
     }
   </style>
    <!-- summernote css -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <style>
     :root {
         --primary-color: #f2761e;
@@ -204,7 +204,7 @@
         <li class="{{ Request::routeIs('courses.*') ? 'active' : '' }}">
           <a href="{{ route('courses.index') }}"><span class="fa fa-book mr-3"></span> Courses</a>
         </li>
-        <li class="{{ Request::routeIs('batches') || Request::routeIs('batchDetail') ? 'active' : '' }}"> <a href="{{ route('batches') }}"><span class="fa fa-book mr-3"></span> Batches</a></li>
+        <li class="{{ Request::routeIs('batches') || Request::routeIs('batchDetail') ? 'active' : '' }}"> <a href="{{ route('batches') }}"><span class="fa fa-users mr-3"></span> Batches</a></li>
         <li class="{{ Request::routeIs('mock-tests.*') || Request::routeIs('questions.*') ? 'active' : '' }}">
           <a href="{{ route('mock-tests.index') }}"><span class="fa fa-question-circle mr-3"></span> Mock Test</a>
         </li>
@@ -215,7 +215,7 @@
           <a href="/admin/flash"><span class="fa fa-question-circle mr-3"></span> Flash Cards</a>
         </li>
         <li class="{{ Request::is('admin/studentquery') ? 'active' : '' }}">
-          <a href="/admin/studentquery"><span class="fa fa-info mr-3"></span> View Student Query</a>
+          <a href="/admin/studentquery"><span class="fa fa-info mr-3"></span> Student Queries</a>
         </li>
         <li>
           <a href="/logout"><span class="fa fa-sign-out mr-3"></span> Logout</a>
@@ -233,14 +233,14 @@
       @yield('space-work')
     </div>
   </div>
-  <!-- <script src="{{ asset('js/jquery.min.js') }}"></script> -->
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/main.js') }}"></script>
 
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
   <!-- summernote js -->
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
   @stack('scripts')
 </body>
 

@@ -44,10 +44,11 @@ $(document).ready(function() {
     var questions = @json($questions);
     var answers = @json($answers);
     var correctAnswers = @json($correctAnswers);
-    var selectedAnswers = Array(questions.length).fill(null);
+    var selectedAnswers = questions.map(q => []);
     var questionIds = [];
     var selectedOptions = [];
     var correctAnswerIds = [];
+    var userQuestionAnswers = []; // To store question_id and selected_answer_ids
 
     function displayQuestionAndAnswer(index) {
         var question = questions[index];
@@ -57,7 +58,7 @@ $(document).ready(function() {
         questionCard.removeClass('fade-in').addClass('fade-out');
 
         setTimeout(() => {
-            $('#questionText').html('Q No.' + (index + 1) + ' : ' + question.question);
+            $('#questionText').html(question.question);
             $('#questionImageContainer').empty();
             if (question.image) {
                 $('#questionImageContainer').html('<img src="{{ asset('storage/') }}' + question.image + '" alt="Question Image" class="img-fluid question-image">');
@@ -66,9 +67,16 @@ $(document).ready(function() {
             $('#questionCount').text(`Question ${index + 1} of ${questions.length}`);
 
             $('#answerOptions').empty();
+
+            var inputType = 'radio';
+            if (question.question_type === 'Multiple Answer') {
+                inputType = 'checkbox';
+            }
+
             answers[index].forEach(function(ans) {
                 var optionDiv = $('<div class="answer-option"></div>');
-                var input = $('<input type="radio" name="selected_answer" class="answer-radio"></div>');
+                var input = $('<input name="selected_answer_question_' + question.id + '" class="answer-' + inputType + '">');
+                input.attr('type', inputType);
                 input.val(ans.id);
                 input.attr('id', 'option-' + ans.id);
 
@@ -76,23 +84,57 @@ $(document).ready(function() {
                 label.attr('for', 'option-' + ans.id);
                 label.html(ans.answer);
 
-                if (selectedAnswers[index] !== null && selectedAnswers[index] == ans.id) {
-                    input.prop('checked', true);
-                    optionDiv.addClass('selected');
+                if (inputType === 'radio') {
+                    if (selectedAnswers[index] && selectedAnswers[index][0] == ans.id) {
+                        input.prop('checked', true);
+                        optionDiv.addClass('selected');
+                    }
+                } else { // Checkbox
+                    if (selectedAnswers[index].includes(ans.id)) {
+                        input.prop('checked', true);
+                        optionDiv.addClass('selected');
+                    }
                 }
 
                 optionDiv.append(input).append(label);
                 $('#answerOptions').append(optionDiv);
 
                 optionDiv.on('click', function() {
-                    $('.answer-option').removeClass('selected');
-                    $(this).addClass('selected');
-                    $(this).find('.answer-radio').prop('checked', true);
-                    selectedAnswers[index] = ans.id;
+                    if (inputType === 'radio') {
+                        $('.answer-option').removeClass('selected');
+                        $(this).addClass('selected');
+                        $(this).find('.answer-radio').prop('checked', true);
+                        selectedAnswers[index] = [ans.id];
+                    } else { // Checkbox
+                        var checkbox = $(this).find('.answer-checkbox');
+                        if ($(this).hasClass('selected')) {
+                            $(this).removeClass('selected');
+                            checkbox.prop('checked', false);
+                            selectedAnswers[index] = selectedAnswers[index].filter(item => item !== ans.id);
+                        } else {
+                            $(this).addClass('selected');
+                            checkbox.prop('checked', true);
+                            selectedAnswers[index].push(ans.id);
+                        }
+                    }
 
                     questionIds[index] = question.id;
-                    selectedOptions[index] = ans.id;
+                    // For multiple choice, selectedOptions should be an array
+                    selectedOptions[index] = selectedAnswers[index];
                     correctAnswerIds[index] = correctAnswers[index];
+
+                    // Store the selected answer in userQuestionAnswers
+                    // Find if the question already exists in userQuestionAnswers
+                    var existingAnswer = userQuestionAnswers.find(item => item.question_id === question.id);
+
+                    if (existingAnswer) {
+                        existingAnswer.selected_answer_ids = selectedAnswers[index];
+                    } else {
+                        userQuestionAnswers.push({
+                            question_id: question.id,
+                            selected_answer_ids: selectedAnswers[index]
+                        });
+                    }
                 });
             });
 
@@ -104,8 +146,10 @@ $(document).ready(function() {
     displayQuestionAndAnswer(currentQuestionIndex);
 
     $('#nextButton').on('click', function() {
-        const selectedAnswer = $('input[name="selected_answer"]:checked');
-        if (selectedAnswer.length > 0 || selectedAnswers[currentQuestionIndex] !== null) {
+        var currentQuestion = questions[currentQuestionIndex];
+        var isAnswerSelected = selectedAnswers[currentQuestionIndex] && selectedAnswers[currentQuestionIndex].length > 0;
+
+        if (isAnswerSelected) {
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
                 displayQuestionAndAnswer(currentQuestionIndex);
@@ -137,23 +181,45 @@ $(document).ready(function() {
         let unattemptedCount = 0;
 
         for (let i = 0; i < totalQuestions; i++) {
-            if (selectedAnswers[i] === null) {
-                unattemptedCount++;
-            } else if (correctAnswers[i].includes(parseInt(selectedAnswers[i]))) {
-                correctCount++;
+            var question = questions[i];
+            var selected = selectedAnswers[i];
+            var correct = correctAnswers[i];
+
+            if (question.question_type === 'Multiple Answer') {
+                // For multiple choice, selected is an array
+                if (selected.length === 0) {
+                    unattemptedCount++;
+                } else {
+                    // Check if all selected answers are correct and no extra incorrect answers are selected
+                    const isCorrect = selected.every(ansId => correct.includes(ansId)) &&
+                                      selected.length === correct.length;
+                    if (isCorrect) {
+                        correctCount++;
+                    } else {
+                        incorrectCount++;
+                    }
+                }
             } else {
-                incorrectCount++;
+                // For single choice (mcq, true_false), selected is an array with one element or empty
+                if (!selected || selected.length === 0) {
+                    unattemptedCount++;
+                } else if (correct.includes(parseInt(selected[0]))) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
             }
         }
 
         const percentage = ((correctCount / totalQuestions) * 100).toFixed(2);
 
         $.ajax({
-            url: '{{ route('student.mock.test.submit.result') }}',
+            url: "{{ route('student.mock.test.submit.result') }}",
             type: 'POST',
             data: JSON.stringify({
-                mock_test_id: {{ $mockTest->id }},
-                correct_count: correctCount,
+                mock_test_id: '{{ $mockTest->id }}',
+                user_question_answers: userQuestionAnswers, // Send the accumulated answers
+                correct_count: correctCount, // Still send these for now, will remove later
                 incorrect_count: incorrectCount,
                 unattempted_count: unattemptedCount,
                 percentage: percentage
@@ -386,6 +452,7 @@ $(document).ready(function() {
         margin-bottom: 0;
         cursor: pointer;
         flex-grow: 1;
+        padding: 0 10px;
     }
 
     .quiz-navigation {
