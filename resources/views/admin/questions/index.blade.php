@@ -9,30 +9,33 @@
     @if($questions->isEmpty())
     <p>No questions found for this mock test.</p>
     @else
+    <p>Total Questions: {{ $questions->count() }}</p>
     <table class="table table-bordered table-striped" id="questionTable">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>#</th>
+                <th width="5%">Q ID</th>
                 <th>Question</th>
                 <th>Level</th>
-                <th>Question Type</th>
-                <th width="15%">Actions</th>
+                <th width="15%">Question Type</th>
+                <th width="20%">Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($questions as $question)
             <tr>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $question->id }}</td>
                 <td>{!! $question->question !!}</td>
                 <td>{{ $question->lavel }}</td>
                 <td>{{ $question->question_type }}</td>
                 <td>
-                    <a href="{{ route('questions.show', $question->id) }}" class="btn btn-sm btn-primary">View</a>
-                    <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-info">Edit</a>
+                    <a href="{{ route('questions.show', $question->id) }}" class="btn btn-sm btn-info">View</a>
+                    <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-dark">Edit</a>
                     <form action="{{ route('questions.destroy', $question->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
                 </td>
             </tr>

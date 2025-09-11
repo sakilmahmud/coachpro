@@ -25,6 +25,24 @@
     table.dataTable {
       border-top: 1px solid;
     }
+
+    .sidebar-footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .sidebar-footer a {
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+    }
+
+    
+    .sidebar-footer a:hover {
+        color: #f2761e !important;
+    }
   </style>
    <!-- summernote css -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
@@ -192,27 +210,28 @@
 <body>
   <div class="wrapper d-flex align-items-stretch">
     <nav id="sidebar">
-      <div class="custom-menu">
+      <div class="d-flex custom-menu">
         <button type="button" id="sidebarCollapse" class="btn btn-primary">
           <i class="fa fa-bars"></i>
           <span class="sr-only">Toggle Menu</span>
         </button>
+        <p style="margin-top: 10px; color:#000; width: 250px">Hi Admin</p>
       </div>
       <h1><a href="/admin/dashboard" class="logo"><img src="https://coachproconsulting.com/image/logo-new.png" alt="CoachPro Consulting Logo" style="max-width: 100%; height: auto;"></a></h1>
-      <ul class="list-unstyled components mb-5">
+      <ul class="list-unstyled components">
         <li class="{{ Request::routeIs('admin.dashboard') ? 'active' : '' }}"> <a href="{{ route('admin.dashboard') }}"><span class="fa fa-tachometer mr-3"></span> Dashboard</a> </li>
         <li class="{{ Request::routeIs('courses.*') ? 'active' : '' }}">
           <a href="{{ route('courses.index') }}"><span class="fa fa-book mr-3"></span> Courses</a>
         </li>
         <li class="{{ Request::routeIs('batches') || Request::routeIs('batchDetail') ? 'active' : '' }}"> <a href="{{ route('batches') }}"><span class="fa fa-users mr-3"></span> Batches</a></li>
         <li class="{{ Request::routeIs('mock-tests.*') || Request::routeIs('questions.*') ? 'active' : '' }}">
-          <a href="{{ route('mock-tests.index') }}"><span class="fa fa-question-circle mr-3"></span> Mock Test</a>
+          <a href="{{ route('mock-tests.index') }}"><span class="fa fa-quora mr-3"></span> Mock Tests</a>
         </li>
         <li class="{{ Request::is('admin/students') ? 'active' : '' }}">
           <a href="/admin/students"><span class="fa fa-graduation-cap mr-3"></span> Students</a>
         </li>
         <li class="{{ Request::is('admin/flash') ? 'active' : '' }}">
-          <a href="/admin/flash"><span class="fa fa-question-circle mr-3"></span> Flash Cards</a>
+          <a href="/admin/flash"><span class="fa fa-window-maximize mr-3"></span> Flash Cards</a>
         </li>
         <li class="{{ Request::is('admin/studentquery') ? 'active' : '' }}">
           <a href="/admin/studentquery"><span class="fa fa-info mr-3"></span> Student Queries</a>
@@ -221,15 +240,18 @@
           <a href="/logout"><span class="fa fa-sign-out mr-3"></span> Logout</a>
         </li>
       </ul>
+      <div class="sidebar-footer">
+        <span class="text-white">Copyright © 2025 <br><a href="https://coachproconsulting.com/" class="text-white">CoachPro Consulting Pvt. Ltd.</a></span>
+      </div>
     </nav>
     <!-- Page Content  -->
     <div id="content" class="p-4 p-md-5 pt-5">
-      <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+      <!-- <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
         @auth
         <p style="margin-bottom: 0;">{{ Auth::user()->email }}</p>
         <p style="margin-bottom: 0;">({{ Auth::user()->is_admin == 1 ? 'Admin' : 'Student' }})</p>
         @endauth
-      </div>
+      </div> -->
       @yield('space-work')
     </div>
   </div>

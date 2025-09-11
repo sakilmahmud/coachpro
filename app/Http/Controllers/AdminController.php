@@ -797,7 +797,7 @@ class AdminController extends Controller
 
     public function flashDashboard()
     {
-        $courses = Course::all();
+        $courses = Course::withCount('flashQuestions')->get();
         return view('admin.flash_cards.courses', compact('courses'));
     }
     //// Add Flash

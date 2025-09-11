@@ -32,14 +32,14 @@
 
 <!-- Video Viewer Modal -->
 <div class="modal fade" id="videoViewerModal" tabindex="-1" aria-labelledby="videoViewerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="videoViewerModalLabel">Watch Video</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="embed-responsive embed-responsive-16by9">
+                <div class="embed-responsive embed-responsive-16by9 h-100">
                     <iframe class="embed-responsive-item" id="videoViewerFrame" allowfullscreen></iframe>
                 </div>
             </div>
@@ -104,7 +104,6 @@ $(document).ready(function() {
         #videoViewerFrame {
             width: 100%;
             height: 100%;
-            min-height: 400px; /* Ensure a minimum height for visibility */
         }
         .section-title {
             font-size: 2.2rem;

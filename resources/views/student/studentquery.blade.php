@@ -10,16 +10,16 @@
                 </div>
                 <div class="card-body query-card-body">
                     @if($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @endif
 
-                    @if(session('success'))    <div class="alert alert-success" role="alert">        {{ session('success') }}    </div>@endif                    <form id="savequery" action="{{ route('studentQuery') }}" method="POST" enctype="multipart/form-data">
+                    @if(session('success')) <div class="alert alert-success" role="alert"> {{ session('success') }} </div>@endif <form id="savequery" action="{{ route('studentQuery') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group mb-3">
@@ -39,7 +39,7 @@
 
                         <div class="form-group mb-4">
                             <label for="number" class="form-label">Phone No <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="number" name="number" value="{{ Auth::user()->phone_no }}" >
+                            <input type="text" class="form-control" id="number" name="number" value="{{ Auth::user()->phone_no }}">
                         </div>
 
                         <div class="form-group mb-4">
@@ -50,6 +50,7 @@
                         <div class="form-group mb-4">
                             <label for="attachment" class="form-label">Attachment (PDF, Images)</label>
                             <input type="file" class="form-control" id="attachment" name="attachment">
+                            <small>*Maximum file size is 2MB</small>
                         </div>
 
                         <div class="d-grid">

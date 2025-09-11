@@ -1,10 +1,14 @@
 @extends('layout.student-layout')
 
 @section('space-work')
-    <div class="container course-page-container">
-        <h2 class="section-title text-center mb-4">All Available Courses</h2>
-        <div class="row">
+    <div class="container course-page-container mx-auto">
+        <h2 class="section-title text-center mb-4">Course Details</h2>
+        <div class="row mx-auto">
             @forelse($allCourses as $course)
+
+            @if(!$enrolledBatches->pluck('course_id')->contains($course->id))
+                @continue
+            @endif
                 <div class="col-md-4 mb-4">
                     <div class="card course-card h-100 shadow-sm">
                         <div class="card-body d-flex flex-column">
@@ -19,12 +23,6 @@
                                 @else
                                     <span class="badge bg-info course-badge">Available</span>
                                 @endif
-                                <button type="button" class="btn btn-sm btn-light view-details-btn"
-                                        data-bs-toggle="modal" data-bs-target="#courseDetailsModal"
-                                        data-course-name="{{ $course->name }}"
-                                        data-course-description="{{ $course->description }}">
-                                    View Details
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -36,7 +34,7 @@
             @endforelse
         </div>
 
-        <h2 class="section-title text-center mt-5 mb-4">My Enrolled Batches</h2>
+        <h2 class="section-title text-center mt-5 mb-4">Enrolled Batch</h2>
         @if($enrolledBatches->isEmpty())
             <div class="alert alert-warning text-center">
                 You are not enrolled in any batches yet. Please contact admin to enroll a batch for a course.
@@ -63,25 +61,6 @@
         @endif
         <div class="text-center mt-4">
             <a href="{{ url()->previous() }}" class="btn btn-secondary">Go Back</a>
-        </div>
-    </div>
-
-    <!-- Course Details Modal -->
-    <div class="modal fade" id="courseDetailsModal" tabindex="-1" aria-labelledby="courseDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="courseDetailsModalLabel">Course Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h6 id="modalCourseName" class="text-primary"></h6>
-                    <p id="modalCourseDescription"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
         </div>
     </div>
 

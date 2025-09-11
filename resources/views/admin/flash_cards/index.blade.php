@@ -1,6 +1,7 @@
 @extends('layout/admin-layout')
 
 @section('space-work')
+
 <div class="container">
     <h1>Flash Questions for {{ $course->name }}</h1>
     <a href="{{ route('flash-cards.index') }}" class="btn btn-secondary mb-3">Back to Courses</a>
@@ -12,6 +13,7 @@
         <table class="table table-bordered table-striped" id="flashQuestionTable">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>ID</th>
                     <th>Question</th>
                     <th>Answer</th>
@@ -21,6 +23,7 @@
             <tbody>
                 @foreach($flashQuestions as $flashQuestion)
                     <tr>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $flashQuestion->id }}</td>
                         <td>{!! $flashQuestion->question !!}</td>
                         <td>{!! $flashQuestion->answer !!}</td>
@@ -38,6 +41,7 @@
         </table>
     @endif
 </div>
+
 @push('scripts')
 <script>
     $(document).ready(function() {
@@ -45,4 +49,5 @@
     });
 </script>
 @endpush
+
 @endsection

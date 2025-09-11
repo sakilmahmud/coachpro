@@ -15,6 +15,7 @@ use App\Models\Question;
 use App\Models\StudentQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Course;
 class SController extends Controller
 {     
     public function mocktest($testsubject, $title)
@@ -266,33 +267,23 @@ private function getCurrentAttempt($userId, $title, $subject)
     
         return view('student.mocktest1', ['titles' => $allTitles]);
     }
-    public function flashcard()
+    public function flashcard(Request $request)
 
     {
 
-        
-            $user = Auth::user();
+        $studentId = Auth::id();
+        $subjectIds = Access::where('student_id', $studentId)->pluck('subject_id');
+        $courseIds = Subject::whereIn('id', $subjectIds)->pluck('course_id')->unique();
 
-            // Now you have the user's ID in $user->id
-            $userId = $user->id;
-            // Retrieve the user by ID
-            
-            //dd($userId);
-            $subjectIds = Access::where('student_id', $userId)->pluck('subject_id')->toArray();
-
-            // Get course IDs associated with these subjects
-            $courseIds = Subject::whereIn('id', $subjectIds)->pluck('course_id')->unique()->toArray();
-
-            // Fetch flash questions based on course_id
-            $flash = FlashQuestion::whereIn('course_id', $courseIds)->paginate(1);
-
-            
-    
-
-        //             dd(  $flash);
-        //             return view('student.dashboard',['exams'=>$subjects]);
-        // $exams = FlashQuestion::paginate(1);
-        return view('student.flashcard',['exams'=>$flash]);
+        if ($request->has('course_id')) {
+            $course_id = $request->course_id;
+            $flash = FlashQuestion::where('course_id', $course_id)->whereIn('course_id', $courseIds)->paginate(1);
+            $course = Course::find($course_id);
+            return view('student.flashcard', ['exams' => $flash, 'course' => $course]);
+        } else {
+            $courses = Course::whereIn('id', $courseIds)->withCount('flashQuestions')->get();
+            return view('student.flashcard-courses', ['courses' => $courses]);
+        }
     }
 
     public function querytext()

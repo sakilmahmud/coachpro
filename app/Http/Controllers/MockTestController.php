@@ -14,7 +14,7 @@ class MockTestController extends Controller
      */
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::withCount('mockTests')->get();
         return view('admin.mock_tests.courses', compact('courses'));
     }
 
@@ -59,7 +59,7 @@ class MockTestController extends Controller
     public function show($id)
     {
         $course = \App\Models\Course::findOrFail($id);
-        $mockTests = \App\Models\MockTest::where('course_id', $id)->get();
+        $mockTests = \App\Models\MockTest::where('course_id', $id)->withCount('questions')->get();
         return view('admin.mock_tests.index', compact('course', 'mockTests'));
     }
 

@@ -15,31 +15,51 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    .sidebar-footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .sidebar-footer a {
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+    }
+
+    .sidebar-footer a:hover {
+        color: #f2761e !important;
+    }
+  </style>
 </head>
 
 <body>
 
   <div class="wrapper d-flex align-items-stretch">
     <nav id="sidebar">
-      <div class="custom-menu">
+      <div class="d-flex custom-menu">
         <button type="button" id="sidebarCollapse" class="btn btn-primary">
           <i class="fa fa-bars"></i>
           <span class="sr-only">Toggle Menu</span>
         </button>
+        <p style="margin-top: 10px; color:#000; width: 250px">Hi {{ Auth::user()->name }}</p>
       </div>
+
       <h1><a href="{{ route('student.dashboard') }}" class="logo"><img src="https://coachproconsulting.com/image/logo-new.png" alt="CoachPro Consulting Logo" style="max-width: 100%; height: auto;"></a></h1>
-      <ul class="list-unstyled components mb-5">
+      <ul class="list-unstyled components">
         <li class="{{ Request::routeIs('student.dashboard') ? 'active' : '' }}">
-          <a href="{{ route('student.dashboard') }}"><span class="fa fa-book mr-3"></span> Dashboard</a>
+          <a href="{{ route('student.dashboard') }}"><span class="fa fa-tachometer mr-3"></span> Dashboard</a>
         </li>
         <li class="{{ Request::routeIs('student.courses') ? 'active' : '' }}">
-          <a href="{{ route('student.courses') }}"><span class="fa fa-book mr-3"></span> My Courses</a>
+          <a href="{{ route('student.courses') }} "><span class="fa fa-book mr-3"></span> My Courses</a>
         </li>
         <li class="{{ Request::routeIs('student.mock.tests') ? 'active' : '' }}">
-          <a href="{{route('student.mock.tests')}}"><span class="fa fa-list-alt mr-3"></span> Mock Tests</a>
+          <a href="{{route('student.mock.tests')}}"><span class="fa fa-quora mr-3"></span> Mock Tests</a>
         </li>
         <li class="{{ Request::routeIs('student.mock.tests.attempted') ? 'active' : '' }}">
-          <a href="{{route('student.mock.tests.attempted')}}"><span class="fa fa-list-alt mr-3"></span> Review Attempted Tests</a>
+          <a href="{{route('student.mock.tests.attempted')}}"><span class="fa fa-eye mr-3"></span> Review Attempted Tests</a>
         </li>
         <!-- Study Material -->
         <li class="menu-item {{ Request::routeIs('student.study-materials.pdfs') || Request::routeIs('student.study-materials.videos') ? 'active' : '' }}" id="studyMaterial">
@@ -59,7 +79,7 @@
           </ul>
         </li>
         <li class="{{ Request::routeIs('flash.card') ? 'active' : '' }}">
-          <a href="{{route('flash.card')}}"><span class="fa fa-tasks mr-3"></span> Flash Card</a>
+          <a href="{{route('flash.card')}}"><span class="fa fa-window-maximize mr-3"></span> Flash Card</a>
         </li>
         <li class="{{ Request::routeIs('student.profile') ? 'active' : '' }}" style="display: none;">
             <a href="{{ route('student.profile') }}"><span class="fa fa-user mr-3"></span> My Profile</a>
@@ -68,26 +88,28 @@
             <a href="{{ route('student.change-password') }}"><span class="fa fa-key mr-3"></span> Change Password</a>
         </li>
         <li class="{{ Request::routeIs('query.text') ? 'active' : '' }}">
-          <a href="{{route('query.text')}}"><span class="fa fa-tasks mr-3"></span> Query</a>
+          <a href="{{route('query.text')}}"><span class="fa fa-info mr-3"></span> Query</a>
         </li>
         <li>
           <a href="/logout"><span class="fa fa-sign-out mr-3"></span> Logout</a>
         </li>
       </ul>
-
+      <div class="sidebar-footer">
+        <span class="text-white">Copyright © 2025 <br><a href="https://coachproconsulting.com/" class="text-white">CoachPro Consulting Pvt. Ltd.</a></span>
+      </div>
     </nav>
 
     <!-- Page Content  -->
     <div id="content" class="p-4 p-md-5 pt-5">
-      <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; align-items: center;">
+      <!-- <div style="position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; align-items: center;">
         @auth
         @if(Auth::user()->image)
             <img src="{{ asset('images/'.Auth::user()->image) }}" alt="Profile Picture" class="img-thumbnail rounded-circle" width="40" height="40">
         @endif
-        <p style="margin-bottom: 0;">{{ Auth::user()->email }}</p>
+        <p style="margin-bottom: 0;">Hi {{ Auth::user()->name }}</p>
         <p style="margin-bottom: 0;">({{ Auth::user()->is_admin == 1 ? 'Admin' : 'Student' }})</p>
         @endauth
-      </div>
+      </div> -->
       @yield('space-work')
     </div>
   </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Question;
 use App\Models\Answer;
+use App\Models\Course;
+use App\Models\MockTest;
 
 class QuestionController extends Controller
 {
@@ -127,9 +129,9 @@ class QuestionController extends Controller
      */
     public function edit($id)
     {
-        $question = \App\Models\Question::with('answers')->findOrFail($id);
-        $mockTest = \App\Models\MockTest::findOrFail($question->mock_test_id);
-        $course = \App\Models\Course::findOrFail($question->course_id);
+        $question = Question::with('answers')->findOrFail($id);
+        $mockTest = MockTest::findOrFail($question->mock_test_id);
+        $course = Course::findOrFail($question->course_id);
         return view('admin.questions.edit', compact('question', 'mockTest', 'course'));
     }
 

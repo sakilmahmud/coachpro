@@ -15,8 +15,18 @@ class Course extends Model
         'logo',
     ];
 
+    public function flashQuestions()
+    {
+        return $this->hasMany(FlashQuestion::class);
+    }
+
     public function mockTests()
     {
         return $this->hasMany(MockTest::class);
+    }
+    
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
     }
 }
